@@ -1,5 +1,8 @@
 <template>
     <div>
+        这里是home
+        这里是home
+        这里是home
     </div>
 </template>
 
@@ -8,6 +11,11 @@
     export default {
         name: 'Home',
         data() {
+            return {
+
+            }
+        },
+        mounted() {
 
         }
     }
