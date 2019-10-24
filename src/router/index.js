@@ -6,6 +6,9 @@ import Home from '@/pages/Home'
 import UserCenter from '@/pages/UserCenter'
 import Login from '@/pages/Login.vue'
 import Sheet from '@/pages/Sheet'
+import SearchSongList from '@/pages/SearchSongList'
+
+import Test from '@/components/Uploader'
 
 Vue.use(Router)
 
@@ -31,6 +34,11 @@ const router = new Router({
                     path: '/sheet/:id',
                     name: 'Sheet',
                     component: Sheet
+                },
+                {
+                    path: '/searchSongList/:keywords',
+                    name: 'SearchSongList',
+                    component: SearchSongList
                 }
             ]
         },
@@ -38,6 +46,11 @@ const router = new Router({
             path: '/login',
             name: 'Login',
             component: Login
+        },
+        {
+            path: '/test',
+            name: 'Test',
+            component: Test
         }
     ]
 })

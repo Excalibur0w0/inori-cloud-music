@@ -1,5 +1,7 @@
 import { Service } from './servie';
 import qs from "qs";
+import SparkMD5 from "spark-md5"
+
 
 export function doLogin (username, password) {
      return Service({
@@ -32,7 +34,7 @@ export function getUserInfoByToken () {
 export function createEmptySheet(sheetName, desc, userId) {
 
     return Service({
-        url: '/provider-music' + '/createEmptySheet',
+        url: '/provider-music' + '/sheet/createEmptySheet',
         method: 'POST',
         data: qs.stringify({
             sheetName: sheetName,
@@ -44,7 +46,7 @@ export function createEmptySheet(sheetName, desc, userId) {
 
 export function createSheet (shtName, desc, userId, songIds) {
     return Service({
-        url: '/provider-music' + '/createSheet',
+        url: '/provider-music' + '/sheet/createSheet',
         method: 'POST',
         data: qs.stringify({
             shtName: shtName,
@@ -57,7 +59,7 @@ export function createSheet (shtName, desc, userId, songIds) {
 
 export function getAllSheet (userId) {
     return Service({
-        url: '/provider-music' + '/getAllSheet',
+        url: '/provider-music' + '/sheet/getAllSheet',
         method: 'GET',
         params: {
             userId: userId
@@ -67,10 +69,128 @@ export function getAllSheet (userId) {
 
 export function getSheetInfo (sheetId) {
     return Service({
-        url: '/provider-music' + '/getSheetInfo',
+        url: '/provider-music' + '/sheet/getSheetInfo',
         method: 'GET',
         params: {
             sheetId: sheetId
         }
     })
 }
+
+export function getSongsByUploader(uploaderId) {
+    return Service({
+        url: '/provider-music' + '/song/getSongsByUploader',
+        method: 'GET',
+        params: {
+            uploaderId: uploaderId
+        }
+    })
+}
+
+export function getSongsByAuthor(authorName) {
+    return Service({
+        url: '/provider-music' + '/song/getSongsByAuthor',
+        method: 'GET',
+        params: {
+            author: authorName
+        }
+    })
+}
+
+export function searchSongs(keywords) {
+    return Service({
+        url: '/provider-music' + '/song/searchSongs',
+        method: 'GET',
+        params: {
+            keywords: keywords
+        }
+    })
+}
+
+export function getSongsBySheet(sheetId) {
+    return Service({
+        url: '/provider-music' + '/song/getSongsBySheet',
+        method: 'GET',
+        params: {
+            sheetId: sheetId
+        }
+    })
+}
+
+export function checkFileExistsByMd5() {
+
+}
+
+export function uploadSingleFile(file, uploadId) {
+    const chunkSize = 1024 * 64;
+    let blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice;
+    let chunkTotal = Math.ceil(file.size / chunkSize)
+    let currentChunk = 0
+    let sparkTotal = new SparkMD5.ArrayBuffer()
+    let fileReader = new FileReader()
+
+    fileReader.onload = (e) => {
+        // eslint-disable-next-line no-console
+        console.log('read chunk nr', currentChunk + 1, 'of', chunkTotal);
+        sparkTotal.append(e.target.result); // Append array buffer
+        currentChunk++;
+
+        if (currentChunk < chunkTotal) {
+            loadNext();
+        } else {
+            let md5Hash = sparkTotal.end();
+            // eslint-disable-next-line no-console
+            console.info('computed hash', md5Hash);  // Compute hash
+            uploadChunk(file, 0, chunkSize, md5Hash, uploadId);
+        }
+    };
+
+    fileReader.onerror = () => {
+        // eslint-disable-next-line no-console
+        console.warn('oops, something went wrong.');
+    };
+
+    const loadNext = () => {
+        let start = currentChunk * chunkSize
+        let end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
+
+        fileReader.readAsArrayBuffer(blobSlice.call(file, start, end));
+    }
+
+    loadNext();
+
+    // return uploadChunk(file, 0, chunkSize, file.name);
+}
+
+export function uploadChunk(file, num, chunkSize, md5, uploadId) {
+    let formData = new FormData();
+    let chunkTotal = Math.ceil(file.size / chunkSize); // 总的chunk数
+    let nextSize = Math.min((num + 1) * chunkSize, file.size);
+    let fileData = file.slice(num * chunkSize, nextSize);
+
+    if (num >= chunkTotal) {
+        // eslint-disable-next-line no-console
+        console.log("传输块数完毕")
+        return;
+    }
+
+    formData.append("file", fileData);
+    formData.append("md5", md5);
+    formData.append("chunkIndex", num);
+    formData.append("chunkTotal", chunkTotal)
+    formData.append("uploader", uploadId)
+
+    return Service({
+        url: '/provider-music' + '/song/upload',
+        method: 'POST',
+        header: {
+            'Content-Type': "multipart/form-data"
+        },
+        data: formData
+    }).then(data => {
+        if (data && data.canContinue) {
+            uploadChunk(fileData, num + 1, chunkSize,  md5)
+        }
+    })
+}
+

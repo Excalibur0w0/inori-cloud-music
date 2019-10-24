@@ -3,6 +3,8 @@
         这里是home
         这里是home
         这里是home
+        这里是home
+        这里是home
     </div>
 </template>
 

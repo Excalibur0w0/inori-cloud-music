@@ -2,10 +2,11 @@ import router from './index'
 import {getToken} from '@/utils/tokenUitls'
 import store from '@/store'
 
+
 router.beforeEach((to, from, next) => {
     let user = store.getters.getUser;
 
-    if (to.path !== '/login') {
+    if (to.path !== "/login") {
         if (!user) {
             if (getToken()) {
                 store.dispatch('getInfo').then(res => {

@@ -79,6 +79,7 @@
                 if (userId) {
                     getUserBasicInfo(userId).then((userBasic) => {
                         this.sheetAuthorName = userBasic.uname;
+                        // eslint-disable-next-line no-console
                         console.log(this.sheet);
                     })
                 }
@@ -94,12 +95,7 @@
 </script>
 
 <style lang="scss" scoped>
-    $std_padding: 20px;
-    $sml_padding: 15px;
-    $big_padding: 30px;
-    $sml_margin: 15px;
-    $std_margin: 20px;
-    $big_margin: 30px;
+    @import "public/public.scss";
 
     .sheet-wap {
         width: 100%;

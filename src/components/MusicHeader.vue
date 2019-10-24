@@ -11,7 +11,7 @@
                     祈云音乐
                     <md-field class="search-input-wap">
                         <label>请输入搜索内容</label>
-                        <md-input v-model="searchText"></md-input>
+                        <md-input v-model="searchText" @keyup="searchTextKeyUp"></md-input>
                     </md-field>
                 </div>
 
@@ -57,7 +57,7 @@
             }
         },
         methods: {
-            ...mapActions(['logout']),
+            ...mapActions(['logout', 'searchSongs']),
             clickLogOut () {
                 this.logout().then(() => {
                     this.$router.push("/login")
@@ -65,6 +65,17 @@
             },
             clearStoreUser () {
                 this.$store.state.userModule.user = null;
+            },
+            searchTextKeyUp(e) {
+                // 用户按下enter键位
+                if(e.keyCode === 13) {
+                    this.searchSongs(this.searchText).then(() => {
+                        this.$router.push({
+                            name: 'SearchSongList',
+                            params: { keywords: this.searchText }
+                        })
+                    })
+                }
             }
         }
     }
