@@ -1,12 +1,12 @@
-import { Service } from './servie';
-import qs from "qs";
-import SparkMD5 from "spark-md5"
+import {Service} from './servie'
+import qs from 'qs'
+import SparkMD5 from 'spark-md5'
 
 
-export function doLogin (username, password) {
-     return Service({
+export function doLogin(username, password) {
+    return Service({
         url: '/provider-auth' + '/auth/login',
-        params: { username: username, password: password },
+        params: {username: username, password: password},
         method: 'POST'
     })
 }
@@ -21,7 +21,7 @@ export function getUserBasicInfo(userId) {
     })
 }
 
-export function getUserInfoByToken () {
+export function getUserInfoByToken() {
     return Service({
         url: '/provider-auth' + '/auth/getUserInfoByToken',
         method: 'GET',
@@ -34,7 +34,7 @@ export function getUserInfoByToken () {
 export function createEmptySheet(sheetName, desc, userId) {
 
     return Service({
-        url: '/provider-music' + '/sheet/createEmptySheet',
+        url: '/provider-music' + '/sheet',
         method: 'POST',
         data: qs.stringify({
             sheetName: sheetName,
@@ -44,9 +44,9 @@ export function createEmptySheet(sheetName, desc, userId) {
     })
 }
 
-export function createSheet (shtName, desc, userId, songIds) {
+export function createSheet(shtName, desc, userId, songIds) {
     return Service({
-        url: '/provider-music' + '/sheet/createSheet',
+        url: '/provider-music' + '/sheet',
         method: 'POST',
         data: qs.stringify({
             shtName: shtName,
@@ -57,9 +57,19 @@ export function createSheet (shtName, desc, userId, songIds) {
     })
 }
 
-export function getAllSheet (userId) {
+export function deleteSheet(sheetId) {
     return Service({
-        url: '/provider-music' + '/sheet/getAllSheet',
+        url: '/provider-music' + '/sheet',
+        method: 'DELETE',
+        data: qs.stringify({
+            sheetId: sheetId
+        })
+    })
+}
+
+export function getAllSheet(userId) {
+    return Service({
+        url: '/provider-music' + '/sheets',
         method: 'GET',
         params: {
             userId: userId
@@ -67,9 +77,9 @@ export function getAllSheet (userId) {
     })
 }
 
-export function getSheetInfo (sheetId) {
+export function getSheetInfo(sheetId) {
     return Service({
-        url: '/provider-music' + '/sheet/getSheetInfo',
+        url: '/provider-music' + '/sheet',
         method: 'GET',
         params: {
             sheetId: sheetId
@@ -79,7 +89,7 @@ export function getSheetInfo (sheetId) {
 
 export function getSongsByUploader(uploaderId) {
     return Service({
-        url: '/provider-music' + '/song/getSongsByUploader',
+        url: '/provider-music' + '/songs',
         method: 'GET',
         params: {
             uploaderId: uploaderId
@@ -89,7 +99,7 @@ export function getSongsByUploader(uploaderId) {
 
 export function getSongsByAuthor(authorName) {
     return Service({
-        url: '/provider-music' + '/song/getSongsByAuthor',
+        url: '/provider-music' + '/songs',
         method: 'GET',
         params: {
             author: authorName
@@ -99,7 +109,7 @@ export function getSongsByAuthor(authorName) {
 
 export function searchSongs(keywords) {
     return Service({
-        url: '/provider-music' + '/song/searchSongs',
+        url: '/provider-music' + '/songs',
         method: 'GET',
         params: {
             keywords: keywords
@@ -109,7 +119,7 @@ export function searchSongs(keywords) {
 
 export function getSongsBySheet(sheetId) {
     return Service({
-        url: '/provider-music' + '/song/getSongsBySheet',
+        url: '/provider-music' + '/songs',
         method: 'GET',
         params: {
             sheetId: sheetId
@@ -117,13 +127,9 @@ export function getSongsBySheet(sheetId) {
     })
 }
 
-export function checkFileExistsByMd5() {
-
-}
-
 export function uploadSingleFile(file, uploadId) {
-    const chunkSize = 1024 * 64;
-    let blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice;
+    const chunkSize = 1024 * 1024
+    let blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice
     let chunkTotal = Math.ceil(file.size / chunkSize)
     let currentChunk = 0
     let sparkTotal = new SparkMD5.ArrayBuffer()
@@ -131,65 +137,117 @@ export function uploadSingleFile(file, uploadId) {
 
     fileReader.onload = (e) => {
         // eslint-disable-next-line no-console
-        console.log('read chunk nr', currentChunk + 1, 'of', chunkTotal);
-        sparkTotal.append(e.target.result); // Append array buffer
-        currentChunk++;
+        console.log('read chunk nr', currentChunk + 1, 'of', chunkTotal)
+        sparkTotal.append(e.target.result) // Append array buffer
+        currentChunk++
 
         if (currentChunk < chunkTotal) {
-            loadNext();
+            loadNext()
         } else {
-            let md5Hash = sparkTotal.end();
+            let md5Hash = sparkTotal.end()
             // eslint-disable-next-line no-console
-            console.info('computed hash', md5Hash);  // Compute hash
-            uploadChunk(file, 0, chunkSize, md5Hash, uploadId);
+            console.info('computed hash', md5Hash)  // Compute hash
+            asyncUploadChunk(file, chunkSize, md5Hash, uploadId)
         }
-    };
+    }
 
     fileReader.onerror = () => {
         // eslint-disable-next-line no-console
-        console.warn('oops, something went wrong.');
-    };
+        console.warn('oops, something went wrong.')
+    }
 
     const loadNext = () => {
         let start = currentChunk * chunkSize
-        let end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
+        let end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize
 
-        fileReader.readAsArrayBuffer(blobSlice.call(file, start, end));
+        fileReader.readAsArrayBuffer(blobSlice.call(file, start, end))
     }
 
-    loadNext();
+    loadNext()
 
     // return uploadChunk(file, 0, chunkSize, file.name);
 }
 
-export function uploadChunk(file, num, chunkSize, md5, uploadId) {
-    let formData = new FormData();
-    let chunkTotal = Math.ceil(file.size / chunkSize); // 总的chunk数
-    let nextSize = Math.min((num + 1) * chunkSize, file.size);
-    let fileData = file.slice(num * chunkSize, nextSize);
+export function asyncUploadChunk(file, chunkSize, md5Hash, uploadId) {
+    let chunkTotal = Math.ceil(file.size / chunkSize) // 总的chunk数;
+    let pros = []
+    let num = 0
+    for (; num < chunkTotal - 2; num++) {
+        pros.push(uploadChunk(file, num, chunkTotal, chunkSize, md5Hash, uploadId))
+    }
+
+    Promise.all(pros).then(() => {
+        uploadChunk(file, num + 1, chunkTotal, chunkSize, md5Hash, uploadId).then((data) => {
+            console.log(data)
+            console.log('all data trans completed')
+            if (data && data.badChunks) {
+                data.badChunks.forEach(errNum => {
+                    uploadChunk(file, errNum, chunkTotal, chunkSize, md5Hash, uploadId, true)
+                })
+            }
+        })
+    }).catch((errs) => {
+        // eslint-disable-next-line no-console
+        console.error(errs);
+    })
+}
+
+export function uploadChunk(file, num, chunkTotal, chunkSize, md5, uploadId, checkRightNow = false) {
+    console.log(file, num, chunkSize, md5, uploadId)
+    let formData = new FormData()
+    let nextSize = Math.min((num + 1) * chunkSize, file.size)
+    let fileData = file.slice(num * chunkSize, nextSize)
+    let afterFix = file.name.match(/\..+/);
+    let extenstion = ""
+    if (afterFix) {
+       extenstion = afterFix[0]
+    }
+
 
     if (num >= chunkTotal) {
         // eslint-disable-next-line no-console
-        console.log("传输块数完毕")
-        return;
+        console.log('传输块数请求完毕')
+        return
     }
 
-    formData.append("file", fileData);
-    formData.append("md5", md5);
-    formData.append("chunkIndex", num);
-    formData.append("chunkTotal", chunkTotal)
-    formData.append("uploader", uploadId)
+    formData.append('file', fileData)
+    formData.append('md5', md5)
+    formData.append('chunkIndex', num)
+    formData.append('chunkTotal', chunkTotal)
+    formData.append('uploader', uploadId)
+    formData.append('extenstion', extenstion)
+    formData.append('checkRightNow', checkRightNow)
 
     return Service({
-        url: '/provider-music' + '/song/upload',
+        url: '/provider-music' + '/io/upload',
         method: 'POST',
         header: {
-            'Content-Type': "multipart/form-data"
+            'Content-Type': 'multipart/form-data'
         },
         data: formData
+    })
+    //     .then(data => {
+    //     // 上传块
+    //     if (data && data.canContinue) {
+    //         uploadChunk(file, num + 1, chunkSize,  md5, uploadId)
+    //     }
+    // })
+}
+
+export function downloadFile(md5) {
+    return Service({
+        url: '/provider-music' + '/io/download',
+        method: 'GET',
+        params: {
+            md5: md5
+        },
+        responseType: 'blob'
     }).then(data => {
-        if (data && data.canContinue) {
-            uploadChunk(fileData, num + 1, chunkSize,  md5)
+        if (data) {
+            let url = window.URL.createObjectURL(data)
+            window.open(url, '_blank')
+            window.URL.revokeObjectURL(url)
+            // window.location.href = url;
         }
     })
 }

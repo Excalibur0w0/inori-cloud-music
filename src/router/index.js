@@ -36,7 +36,7 @@ const router = new Router({
                     component: Sheet
                 },
                 {
-                    path: '/searchSongList/:keywords',
+                    path: '/searchSongList',
                     name: 'SearchSongList',
                     component: SearchSongList
                 }

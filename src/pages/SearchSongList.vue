@@ -1,37 +1,37 @@
 <template>
     <div class="search-list-wap">
-        <md-table v-if="songs && songs.length > 0">
+        <md-table v-if="songs && songs.length > 0" >
             <md-table-row>
-                <md-table-head md-numeric>操作</md-table-head>
+                <md-table-head>操作</md-table-head>
                 <md-table-head>音乐标题</md-table-head>
                 <md-table-head>歌手</md-table-head>
                 <md-table-head>专辑</md-table-head>
-                <md-table-head>时常</md-table-head>
+                <md-table-head md-sort-by="song">时常</md-table-head>
             </md-table-row>
-            <md-table-row v-for="(item, index) in songs" :key="'songs' + index">
-                <md-table-cell md-numeric>1</md-table-cell>
-                <md-table-cell>Viva La Vida</md-table-cell>
-                <md-table-cell>David Gareet</md-table-cell>
-                <md-table-cell>Music</md-table-cell>
-                <md-table-cell>04 : 16</md-table-cell>
-            </md-table-row>
+            <song-list-item v-for="(item, index) in songs" :song-info="item" :key="'songs' + index">
+            </song-list-item>
         </md-table>
     </div>
 </template>
 
 <script>
     import { mapGetters } from 'vuex'
+    import {downloadFile} from '@/api/request'
+    import SongListItem from '@/components/SongListItem'
 
     export default {
         name: 'SearchSongList',
         methods: {
         },
-        getters: {
+        computed: {
             ...mapGetters(['songs'])
         },
-        actions: {
-
+        mounted() {
+        },
+        components: {
+            SongListItem
         }
+
     }
 </script>
 
@@ -41,6 +41,6 @@
     .search-list-wap {
         width: 100%;
         padding: 0 $std_padding;
-        z-index: -5;
+        /*z-index: 10;*/
     }
 </style>

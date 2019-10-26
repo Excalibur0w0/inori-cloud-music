@@ -37,6 +37,9 @@
                                 <md-menu-item @click="clickLogOut">注销</md-menu-item>
                                 <md-menu-item @click="clearStoreUser">测试：清除USER</md-menu-item>
                                 <md-menu-item>My Item 3</md-menu-item>
+                                <md-menu-item @click="() => {}">
+                                    <uploader :content="'上传'"></uploader>
+                                </md-menu-item>
                             </md-menu-content>
                         </md-menu>
                     </md-button>
@@ -48,6 +51,7 @@
 
 <script>
     import { mapActions } from 'vuex'
+    import Uploader from '@/components/Uploader'
 
     export default {
         name: 'MusicHeader',
@@ -70,13 +74,22 @@
                 // 用户按下enter键位
                 if(e.keyCode === 13) {
                     this.searchSongs(this.searchText).then(() => {
+                        if(this.$route.name === 'SearchSongList') {
+                            return
+                        }
                         this.$router.push({
                             name: 'SearchSongList',
-                            params: { keywords: this.searchText }
+                            // params: { keywords: this.searchText }
                         })
                     })
                 }
+            },
+            fakeUpload() {
+                this.$refs.uploader.click();
             }
+        },
+        components: {
+            Uploader
         }
     }
 </script>

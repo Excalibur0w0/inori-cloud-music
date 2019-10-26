@@ -1,4 +1,4 @@
-import {createSheet, createEmptySheet, getAllSheet, getSheetInfo} from '@/api/request'
+import {deleteSheet, createEmptySheet, getAllSheet, getSheetInfo} from '@/api/request'
 
 const sheetModule = {
     state: {
@@ -17,6 +17,10 @@ const sheetModule = {
         },
         REFRESH_SHEET_LIST(state, sheets) {
             state.sheetList = sheets;
+        },
+        REMOVE_ONE_SHEET(state, sheetId) {
+            let index = state.sheetList.findIndex(sheet => sheet.uuid === sheetId);
+            state.sheetList.splice(index, 1);
         },
         CLEAR_SHEET_LIST(state) {
             state.sheetList = [];
@@ -44,6 +48,13 @@ const sheetModule = {
         getSheetInfo({commit}, sheetId) {
             getSheetInfo(sheetId).then(res => {
                 commit('SET_CUR_SHEET', res)
+            })
+        },
+        removeSheet({commit}, sheetId) {
+            return deleteSheet(sheetId).then(success => {
+                if (success) {
+                    commit('REMOVE_ONE_SHEET', sheetId)
+                }
             })
         }
     },

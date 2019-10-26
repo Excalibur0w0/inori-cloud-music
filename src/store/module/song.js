@@ -2,7 +2,7 @@ import { searchSongs } from '@/api/request'
 
 const songModule = {
     state: {
-        songList: [],
+        songList: null,
         curSongInfo: {}
     },
     mutations: {
