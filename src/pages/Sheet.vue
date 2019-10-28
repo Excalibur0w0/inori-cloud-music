@@ -31,30 +31,32 @@
 
         <md-table>
             <md-table-row>
-                <md-table-head md-numeric>操作</md-table-head>
+                <md-table-head>操作</md-table-head>
                 <md-table-head>音乐标题</md-table-head>
                 <md-table-head>歌手</md-table-head>
                 <md-table-head>专辑</md-table-head>
                 <md-table-head>时常</md-table-head>
             </md-table-row>
 
-            <md-table-row v-for="(item, index) in songList" :key="'songList' + index">
-                <md-table-cell md-numeric>1</md-table-cell>
-                <md-table-cell>Viva La Vida</md-table-cell>
-                <md-table-cell>David Gareet</md-table-cell>
-                <md-table-cell>Music</md-table-cell>
-                <md-table-cell>04 : 16</md-table-cell>
-            </md-table-row>
+
+            <song-list-item v-for="(item, index) in sheetList" :song-info="item" :key="'songs' + index">
+            </song-list-item>
         </md-table>
     </div>
 </template>
 
 <script>
-    import { mapGetters, mapActions } from 'vuex'
-    import {getSheetInfo, getUserBasicInfo} from '@/api/request'
+    import { mapGetters } from 'vuex'
+    import {getSheetInfo, getSongsBySheetId, getUserBasicInfo} from '@/api/request'
+    import SongListItem from '@/components/SongListItem'
 
     export default {
         name: 'Sheet',
+        watch: {
+          '$route' (to, from) {
+            this.fetchSheetData();
+          }
+        },
         data() {
             return {
                 sheetId: null,
@@ -66,30 +68,40 @@
                     createdAt: 'maybe today',
                 },
                 sheetAuthorName: null,
-                songList: [
-                    2, 3, 4, 6, 7, 8
-                ]
+                sheetList: []
             }
         },
         mounted() {
-            this.sheetId = this.$route.params.id;
-            getSheetInfo(this.sheetId).then(data => {
-                this.sheet = data
-                let userId = this.sheet.shtCreator;
-                if (userId) {
-                    getUserBasicInfo(userId).then((userBasic) => {
-                        this.sheetAuthorName = userBasic.uname;
-                        // eslint-disable-next-line no-console
-                        console.log(this.sheet);
-                    })
-                }
-            })
+            this.fetchSheetData();
+        },
+        methods: {
+          fetchSheetData() {
+              this.sheetId = this.$route.params.id;
+              getSheetInfo(this.sheetId).then(data => {
+                  this.sheet = data
+                  let userId = this.sheet.shtCreator;
+                  if (userId) {
+                      getUserBasicInfo(userId).then((userBasic) => {
+                          this.sheetAuthorName = userBasic.uname;
+                          // eslint-disable-next-line no-console
+                          console.log(this.sheet);
+                      })
+                  }
+
+                  getSongsBySheetId(this.sheetId).then(data => {
+                      this.sheetList = data
+                  })
+              })
+          }
         },
         computed: {
             ...mapGetters(['getUser']),
             isSelf () {
                 return this.getUser.uuid === this.sheet.shtCreator;
             }
+        },
+        components: {
+            SongListItem
         }
     }
 </script>

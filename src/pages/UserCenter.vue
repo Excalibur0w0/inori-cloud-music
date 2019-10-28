@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <div class="sht-list">
-                    <div class="sht-wap" @click="goToSheet(item)" v-for="(item, index) in sheets" :key="index + 'sht-create'">
+                    <div class="sht-wap" @click="goToSheet(item)" v-for="(item, index) in mySheets" :key="index + 'sht-create'">
                         {{item.shtName}}
                     </div>
                 </div>
@@ -67,7 +67,7 @@
         computed: {
             ...mapGetters([
                 'getUser',
-                'sheets'
+                'mySheets'
             ])
         },
         mounted() {

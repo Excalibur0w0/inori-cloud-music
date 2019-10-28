@@ -1,4 +1,4 @@
-import { searchSongs } from '@/api/request'
+import {searchSongs, likeSong, dislikeSong, collectSong, cancelCollect} from '@/api/request'
 
 const songModule = {
     state: {
@@ -28,7 +28,20 @@ const songModule = {
             return searchSongs(keywords).then(data => {
                 commit('REFRESH_SONG_LIST', data);
             })
+        },
+        likeSong({ commit }, songId) {
+            return likeSong(songId)
+        },
+        dislikeSong({ commit }, songId) {
+            return dislikeSong(songId)
+        },
+        collectSong({ commit }, { songId, sheetId }) {
+            return collectSong(songId, sheetId)
+        },
+        cancelCollect({ commit }, { songId, sheetId }) {
+            return cancelCollect(songId, sheetId)
         }
+
     },
     getters: {
         songs: state => state.songList,

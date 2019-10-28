@@ -16,7 +16,6 @@
 
 <script>
     import { mapGetters } from 'vuex'
-    import {downloadFile} from '@/api/request'
     import SongListItem from '@/components/SongListItem'
 
     export default {

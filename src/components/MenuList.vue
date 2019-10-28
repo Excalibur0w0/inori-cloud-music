@@ -22,11 +22,8 @@
 
                 <md-list slot="md-expand">
                     <md-list-item class="md-inset">
-                        <span class="md-list-item-text">我喜欢</span>
+                        <span class="md-list-item-text" @click.stop.prevent="goToILike">我喜欢</span>
                     </md-list-item>
-                    <md-list-item class="md-inset">Console</md-list-item>
-                    <md-list-item class="md-inset">PC</md-list-item>
-                    <md-list-item class="md-inset">Phone</md-list-item>
                 </md-list>
             </md-list-item>
 
@@ -35,7 +32,7 @@
                 <span class="md-list-item-text">创建的歌单</span>
 
                 <md-list slot="md-expand">
-                    <md-list-item v-for="(item, index) in sheets" :key="index + 'my-sheets-list'" class="md-inset own-sheet-item" @click="clickOwnSheet(item)">
+                    <md-list-item v-for="(item, index) in mySheets" :key="index + 'my-sheets-list'" class="md-inset own-sheet-item" @click="goToSheet(item)">
                         {{item.shtName}}
                             <md-button class="delete-icon md-icon-button" @click.stop.prevent="deleteOwnSheet(item)">
                                 <md-icon>
@@ -69,7 +66,7 @@
         },
 
         methods: {
-            ...mapActions(['createEmptySheet', 'getAllSheet', 'removeSheet']),
+            ...mapActions(['createEmptySheet', 'getAllMySheet', 'removeMySheet']),
             emitCreateEmptySheet() {
                 this.$prompt({
                     show: true,
@@ -86,18 +83,34 @@
                     }
                 })
             },
-            clickOwnSheet(sheet) {
-                console.log(sheet)
+            goToSheet(sheet) {
+                this.$router.push({
+                    name: 'Sheet',
+                    params: {
+                        id: sheet.uuid
+                    }
+                })
+                this.$forceUpdate();
+            },
+            goToILike() {
+                let userId = this.getUser.uuid
+                
+                this.$router.push({
+                    name: 'ILike',
+                    params: {
+                        id: userId
+                    }
+                })
             },
             deleteOwnSheet(sheet) {
-                this.removeSheet(sheet.uuid);
+                this.removeMySheet(sheet.uuid);
             }
         },
         computed: {
-            ...mapGetters(['sheets', 'getUser'])
+            ...mapGetters(['mySheets', 'getUser'])
         },
         mounted () {
-            this.getAllSheet({
+            this.getAllMySheet({
                 userId: this.getUser.uuid
             });
         }

@@ -2,28 +2,28 @@ import {deleteSheet, createEmptySheet, getAllSheet, getSheetInfo} from '@/api/re
 
 const sheetModule = {
     state: {
-        sheetList: [],
+        mySheetList: [],
         curSheetInfo: {
 
         }
     },
     mutations: {
-        ADD_TO_SHEET(state, sheet) {
+        ADD_TO_MY_SHEET(state, sheet) {
             if (!state.sheetList) {
-                state.sheetList = []
+                state.mySheetList = []
             }
 
-            state.sheetList.push(sheet);
+            state.mySheetList.push(sheet);
         },
-        REFRESH_SHEET_LIST(state, sheets) {
-            state.sheetList = sheets;
+        REFRESH_MY_SHEET_LIST(state, sheets) {
+            state.mySheetList = sheets;
         },
-        REMOVE_ONE_SHEET(state, sheetId) {
-            let index = state.sheetList.findIndex(sheet => sheet.uuid === sheetId);
-            state.sheetList.splice(index, 1);
+        REMOVE_ONE_MY_SHEET(state, sheetId) {
+            let index = state.mySheetList.findIndex(sheet => sheet.uuid === sheetId);
+            state.mySheetList.splice(index, 1);
         },
-        CLEAR_SHEET_LIST(state) {
-            state.sheetList = [];
+        CLEAR_MY_SHEET_LIST(state) {
+            state.mySheetList = [];
         },
         SET_CUR_SHEET(state, sheet) {
             state.curSheetInfo = sheet
@@ -34,32 +34,32 @@ const sheetModule = {
         createEmptySheet({commit}, { sheetName, desc, userId }) {
             return createEmptySheet(sheetName, desc, userId)
                 .then((data) => {
-                      commit('ADD_TO_SHEET', data);
+                      commit('ADD_TO_MY_SHEET', data);
                 })
         },
-        getAllSheet({commit}, {userId}) {
+        getAllMySheet({commit}, {userId}) {
             return getAllSheet(userId).then((data) => {
-                commit('REFRESH_SHEET_LIST', data);
+                commit('REFRESH_MY_SHEET_LIST', data);
             });
         },
-        clearSheets({commit}) {
-            commit('CLEAR_SHEET_LIST')
+        clearMySheets({commit}) {
+            commit('CLEAR_MY_SHEET_LIST')
         },
         getSheetInfo({commit}, sheetId) {
             getSheetInfo(sheetId).then(res => {
                 commit('SET_CUR_SHEET', res)
             })
         },
-        removeSheet({commit}, sheetId) {
+        removeMySheet({commit}, sheetId) {
             return deleteSheet(sheetId).then(success => {
                 if (success) {
-                    commit('REMOVE_ONE_SHEET', sheetId)
+                    commit('REMOVE_ONE_MY_SHEET', sheetId)
                 }
             })
         }
     },
     getters: {
-        sheets: state => state.sheetList,
+        mySheets: state => state.mySheetList,
         curSheetInfo: state => state.curSheetInfo
     }
 }

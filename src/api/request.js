@@ -87,6 +87,16 @@ export function getSheetInfo(sheetId) {
     })
 }
 
+export function getSongsBySheetId(sheetId) {
+    return Service({
+        url: '/provider-music' + '/songs',
+        method: 'GET',
+        params: {
+            sheetId: sheetId
+        }
+    })
+}
+
 export function getSongsByUploader(uploaderId) {
     return Service({
         url: '/provider-music' + '/songs',
@@ -123,6 +133,16 @@ export function getSongsBySheet(sheetId) {
         method: 'GET',
         params: {
             sheetId: sheetId
+        }
+    })
+}
+
+export function getSongsByLikeId(userId) {
+    return Service({
+        url: '/provider-music' + '/songs',
+        method: 'GET',
+        params: {
+            likeId: userId
         }
     })
 }
@@ -252,3 +272,43 @@ export function downloadFile(md5) {
     })
 }
 
+export function likeSong(songId) {
+    return Service({
+        url: '/provider-music' + '/song/like',
+        method: 'POST',
+        data: qs.stringify({
+            songId: songId
+        })
+    })
+}
+export  function dislikeSong(songId) {
+    return Service({
+        url: '/provider-music' + '/song/like',
+        method: 'DELETE',
+        data: qs.stringify({
+            songId: songId
+        })
+    })
+}
+
+export function collectSong(songId, sheetId) {
+    return Service({
+        url: '/provider-music' + '/song/collect',
+        method: 'POST',
+        data: qs.stringify({
+            songId: songId,
+            sheetId: sheetId
+        })
+    })
+}
+
+export function cancelCollect(songId, sheetId) {
+    return Service({
+        url: '/provider-music' + '/song/collect',
+        method: 'DELETE',
+        data: qs.stringify({
+            songId: songId,
+            sheetId: sheetId
+        })
+    })
+}
