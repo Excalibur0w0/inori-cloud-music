@@ -1,75 +1,124 @@
 <template>
     <div class="music-player">
-        <div class="operation">
+        <div class="music-player-bar">
+            <div class="operation">
+                <md-button class="md-icon-button">
+                    <md-icon>skip_previous</md-icon>
+                </md-button>
+                <md-button class="md-icon-button" @click="pauseOrPlay">
+                    <md-icon v-if="!isPause">pause</md-icon>
+                    <md-icon v-if="isPause">play_arrow</md-icon>
+                </md-button>
+                <md-button class="md-icon-button">
+                    <md-icon>skip_next</md-icon>
+                </md-button>
+            </div>
+
+            <div class="time">
+                {{formatCurrentTime}}
+            </div>
+
+            <div class="song-progress-bar">
+                <md-progress-bar md-mode="buffer" :md-value="musicProgress" :md-buffer="buffer"></md-progress-bar>
+                <input @mousedown="mouseDownMusicProgress"
+                       @mouseup="mouseUpMusicProgress"
+                       @change="changeMusicProgress"
+                       class="progress-cover"
+                       type="range"
+                       v-model.number="musicProgress">
+            </div>
+
+            <div class="time">
+                {{formatDuration}}
+            </div>
+
             <md-button class="md-icon-button">
-                <md-icon>skip_previous</md-icon>
+                <md-icon>
+                    {{ isMute ? 'volume_mute' : 'volume_down'}}
+                </md-icon>
             </md-button>
-            <md-button class="md-icon-button" @click="pauseOrPlay">
-                <md-icon v-if="!isPause">pause</md-icon>
-                <md-icon v-if="isPause">play_arrow</md-icon>
-            </md-button>
-            <md-button class="md-icon-button">
-                <md-icon>skip_next</md-icon>
-            </md-button>
+
+            <div class="sound-progress-bar">
+                <md-progress-bar md-mode="determinate" :md-value="soundLevel"></md-progress-bar>
+                <input class="progress-cover" type="range" v-model.number="soundLevel">
+            </div>
+
+            <div class="list-operation">
+                <md-button class="md-icon-button">
+                    <md-icon>repeat</md-icon>
+                </md-button>
+                <md-button class="md-icon-button">
+                    <md-icon>reorder</md-icon>
+                </md-button>
+                <md-button class="md-icon-button" @click.stop.prevent="pullUpOrDownPlayer">
+                    <md-icon v-if="!isUp">arrow_upward</md-icon>
+                    <md-icon v-if="isUp">arrow_downward</md-icon>
+                </md-button>
+            </div>
+
+            <audio ref="player"
+                   @timeupdate="timeupdate"
+                   @play="play"
+                   @pause="pause"
+                   @loadedmetadata="ready"
+                   :src="'http://localhost:5333/provider-music/io/resource/audio?md5=' + curPlay.storePath"
+                   autoplay>
+            </audio>
         </div>
+        <div class="music-player-content" v-show="isUp">
+            <div class="content-wap">
+                <div class="song-wap">
+                    <div class="song-decor">
+                        <div class="avatar"
+                             :style="`background: url(http://localhost:5333/provider-music/io/resource/img?imgPath=${curPlay.imgPath}) 50% 50% / cover;`">
+                        </div>
+                        <div class="operation">
+                            <md-button>
+                                <md-icon>favorite_border</md-icon>
+                                喜欢
+                            </md-button>
+                            <md-button>
+                                <md-icon>star_border</md-icon>
+                                收藏
+                            </md-button>
+                            <md-button>
+                                <md-icon>cloud_download</md-icon>
+                                下载
+                            </md-button>
+                            <md-button>
+                                <md-icon>share</md-icon>
+                                分享
+                            </md-button>
+                        </div>
+                    </div>
+                    <div class="song-info">
+                        <div class="basic-msg">
+                            <div class="title" >
+                                {{curPlay.songName}}
+                            </div>
+                            <div class="desc">阿哦，似乎这首歌没有简介</div>
+                            <div class="info">
+                                <span>专辑: {{curPlay.songAlbum}}</span>
+                                <span>歌手: {{curPlay.songAuthor}}</span>
+                                <span>来源: unknown</span>
+                            </div>
 
-        <div class="time">
-            {{formatCurrentTime}}
+                        </div>
+                        <div class="lyric"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="song-progress-bar">
-            <md-progress-bar md-mode="buffer" :md-value="musicProgress" :md-buffer="buffer"></md-progress-bar>
-            <input @mousedown="mouseDownMusicProgress"
-                   @mouseup="mouseUpMusicProgress"
-                   @change="changeMusicProgress"
-                   class="progress-cover"
-                   type="range"
-                   v-model.number="musicProgress">
-        </div>
-
-        <div class="time">
-            {{formatDuration}}
-        </div>
-
-        <md-button class="md-icon-button">
-            <md-icon>
-                {{ isMute ? "volume_mute" : "volume_down"}}
-            </md-icon>
-        </md-button>
-
-        <div class="sound-progress-bar">
-            <md-progress-bar md-mode="determinate" :md-value="soundLevel"></md-progress-bar>
-            <input class="progress-cover" type="range" v-model.number="soundLevel">
-        </div>
-
-        <div class="list-operation">
-            <md-button class="md-icon-button">
-                <md-icon>repeat</md-icon>
-            </md-button>
-            <md-button class="md-icon-button">
-                <md-icon>reorder</md-icon>
-            </md-button>
-        </div>
-
-        <audio ref="player"
-               @timeupdate="timeupdate"
-               @play="play"
-               @pause="pause"
-               @loadedmetadata="ready"
-               :src="'http://localhost:5333/provider-music/io/resource/audio?md5=' + curPlay.storePath"
-               autoplay>
-        </audio>
     </div>
 </template>
 
 <script>
-    import { mapActions, mapGetters } from 'vuex'
-    import { getRightTime } from '@/utils/transdate'
+    import {mapActions, mapGetters} from 'vuex'
+    import {getRightTime} from '@/utils/transdate'
 
     export default {
         name: 'MusicPlayer',
-        components: {
-        },
+        components: {},
         data() {
             return {
                 musicProgress: 0,
@@ -80,6 +129,7 @@
                 isPause: true,
                 duration: 0,
                 currentTime: 0,
+                isUp: false
             }
         },
         methods: {
@@ -92,10 +142,10 @@
                 }
             },
             play() {
-                this.isPause = false;
+                this.isPause = false
             },
             pause() {
-                this.isPause = true;
+                this.isPause = true
             },
             // meta加载后发生
             ready(e) {
@@ -120,30 +170,35 @@
                 return this.duration !== 0 && this.mapToDuration !== 0
             },
             mouseDownMusicProgress() {
-                this.$refs.player.pause();
+                this.$refs.player.pause()
             },
             mouseUpMusicProgress() {
                 this.$refs.player.play()
             },
             changeMusicProgress(e) {
                 this.currentTime = e.target.value * this.mapToDuration
-                console.log(this.currentTime);
                 this.$refs.player.currentTime = this.currentTime
+            },
+            pullUpOrDownPlayer() {
+                this.isUp = !this.isUp
             }
         },
         computed: {
             ...mapGetters(['curPlay']),
             formatDuration() {
-                return getRightTime(this.duration);
+                return getRightTime(this.duration)
             },
             formatCurrentTime() {
-                return getRightTime(this.currentTime);
+                return getRightTime(this.currentTime)
             }
         }
     }
 </script>
 
 <style lang="scss" scoped>
+    @import "../assets/public";
+
+    $play-bar-height: 50px;
 
     .progress-cover {
         position: absolute;
@@ -151,29 +206,97 @@
         top: -10px;
         opacity: 0;
     }
-    .music-player {
-        height: 50px;
-        background: #424242;
+
+    .music-player-bar {
+        height: $play-bar-height;
+        background: $light_black;
         display: flex;
         justify-content: flex-start;
         align-items: center;
+
         .operation {
             margin-left: 20px;
         }
+
         .list-operation {
             margin-left: 20px;
         }
+
         .time {
             margin-left: 15px;
         }
+
         .song-progress-bar {
             margin-left: 20px;
-            width: calc(100% - 600px);
+            width: calc(100% - 650px);
             position: relative;
         }
+
         .sound-progress-bar {
             width: 120px;
             position: relative;
+        }
+    }
+
+    .music-player-content {
+        height: calc(100vh - 50px);
+        position: relative;
+        padding-top: $big_padding;
+
+        &::before {
+            content: ' ';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: $dark_black;
+            z-index: -1;
+        }
+
+        .content-wap {
+            margin: 0 auto;
+            /*width: 80%;*/
+            width: 800px;
+            min-width: 800px;
+
+            .song-wap {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+
+                .song-decor {
+                    width: 50%;
+                    .avatar {
+                        width: 100%;
+                        padding-bottom: 100%;
+                        height: 0px;
+                        /*width: 200px;*/
+                    }
+                }
+
+                .song-info {
+                    width: 50%;
+                    padding-left: $big_padding;
+                    .basic-msg {
+                        .title {
+                            font-size: $sml_title_size;
+                        }
+                        .desc {
+                            margin-top: $std_margin;
+                        }
+                        .info {
+                            margin-top: $sml_margin;
+                            > span {
+                                margin-right: $sml_margin;
+                            }
+                            &:last-child {
+                                margin-right: 0;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 </style>

@@ -103,6 +103,7 @@
                 & > div {
                     width: 12%;
                     padding-bottom: 12%;
+                    height: 0px;
                     background: antiquewhite;
                     margin-right: $std_margin;
                     margin-bottom: $std_margin;

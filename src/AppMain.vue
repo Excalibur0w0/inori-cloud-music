@@ -52,6 +52,7 @@
         }
 
         .music-player-wap {
+            z-index: 20;
             position: fixed;
             bottom: 0;
             width: 100%;

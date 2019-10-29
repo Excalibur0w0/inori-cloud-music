@@ -2,7 +2,6 @@
     <div class="sheet-wap">
         <div class="sheet-msg-wap">
             <div class="avartar" :style="`background: url(http://localhost:5333/provider-music/io/resource/img?imgPath=${sheet.imgPath}) 50% 50%;`">
-<!--                <img src="https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1571107210&di=39c571dac0dc82a931dbfc2ce38e439b&src=http://hbimg.b0.upaiyun.com/cd9a0aa4ee80e126d3bea1f06c305c100fc82d396ffce-lMjAYv_fw658">-->
             </div>
             <div class="info">
                 <div class="features">

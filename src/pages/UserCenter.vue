@@ -146,6 +146,7 @@
                 .sht-wap {
                     width: 12%;
                     padding-bottom: 12%;
+                    height: 0px;
                     margin-right: $sml_margin;
                     margin-top: $big_margin;
                 }

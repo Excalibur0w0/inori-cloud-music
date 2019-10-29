@@ -1,5 +1,5 @@
 <template>
-    <md-table-row @click.prevent.stop="selectOneSong">
+    <md-table-row @dblclick.prevent.stop="selectOneSong">
         <md-table-cell>
                 <md-button @click.prevent.stop="clickHeart" class="md-icon-button  md-accent">
                     <md-icon>{{songInfo.isFavorite ? "favorite" : "favorite_border"}}</md-icon>
@@ -10,7 +10,7 @@
                     </md-icon>
                 </md-button>
             <md-menu>
-                <md-button class="md-icon-button" md-menu-trigger>
+                <md-button @click.prevent.stop class="md-icon-button" md-menu-trigger>
                     <md-icon>
                         add
                     </md-icon>
