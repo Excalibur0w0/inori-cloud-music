@@ -1,5 +1,5 @@
 <template>
-    <md-table-row>
+    <md-table-row @click.prevent.stop="selectOneSong">
         <md-table-cell>
                 <md-button @click.prevent.stop="clickHeart" class="md-icon-button  md-accent">
                     <md-icon>{{songInfo.isFavorite ? "favorite" : "favorite_border"}}</md-icon>
@@ -25,16 +25,17 @@
                 </md-menu-content>
             </md-menu>
         </md-table-cell>
-        <md-table-cell @click.prevent.stop="clickTest">{{songInfo.song.songName}}</md-table-cell>
-        <md-table-cell>{{songInfo.song.songAuthor}}</md-table-cell>
-        <md-table-cell>{{songInfo.song.songAlbum}}</md-table-cell>
-        <md-table-cell>{{getRightTime(songInfo.song.duration)}}</md-table-cell>
+        <md-table-cell @click.prevent.stop="clickTest">{{songInfo.songName}}</md-table-cell>
+        <md-table-cell>{{songInfo.songAuthor}}</md-table-cell>
+        <md-table-cell>{{songInfo.songAlbum}}</md-table-cell>
+        <md-table-cell>{{getRightTime(songInfo.duration)}}</md-table-cell>
     </md-table-row>
 </template>
 
 <script>
     import {downloadFile} from '@/api/request'
     import { mapActions, mapGetters } from 'vuex';
+    import { getRightTime } from '@/utils/transdate'
 
     export default {
         name: 'SongListItem',
@@ -44,12 +45,11 @@
                 'likeSong',
                 'dislikeSong',
                 'collectSong',
-                'cancelCollect'
+                'cancelCollect',
+                'changeCurPlay'
             ]),
             getRightTime(duration) {
-                let m = Math.floor(duration / 60)
-                let s = Math.ceil(duration % 60)
-                return m + " : " + s;
+                return getRightTime(duration);
             },
             clickOneSong () {
                 console.log('running')
@@ -60,11 +60,11 @@
             },
             clickHeart() {
                 if (this.songInfo.isFavorite) {
-                    this.dislikeSong(this.songInfo.song.uuid).then(() => {
+                    this.dislikeSong(this.songInfo.uuid).then(() => {
                         this.songInfo.isFavorite = false
                     })
                 } else {
-                    this.likeSong(this.songInfo.song.uuid).then(() => {
+                    this.likeSong(this.songInfo.uuid).then(() => {
                         this.songInfo.isFavorite = true
                     })
                 }
@@ -73,9 +73,12 @@
                 let sheetId = sheet.uuid;
 
                 this.collectSong({
-                    songId: this.songInfo.song.uuid,
+                    songId: this.songInfo.uuid,
                     sheetId
                 })
+            },
+            selectOneSong() {
+                this.changeCurPlay(this.songInfo);
             }
         },
         computed: {

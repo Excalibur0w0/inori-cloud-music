@@ -1,7 +1,7 @@
 <template>
     <label class="upload-wap" for="uploader">
         {{content}}
-        <input id="uploader" class="upload-input" type="file" @change="fileListChanged"/>
+        <input id="uploader" class="upload-input" type="file" @change="fileListChanged" />
     </label>
 </template>
 

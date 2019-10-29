@@ -1,5 +1,5 @@
 <template>
-    <div class="search-list-wap">
+    <div class="like-list-wap">
         <md-table v-if="songs && songs.length > 0" >
             <md-table-row>
                 <md-table-head>操作</md-table-head>
@@ -15,31 +15,40 @@
 </template>
 
 <script>
-    import { mapGetters } from 'vuex'
+    import { mapActions, mapGetters } from 'vuex'
     import SongListItem from '@/components/SongListItem'
 
     export default {
-        name: 'SearchSongList',
+        name: 'LikeSongList',
+        data() {
+            return {
+
+            }
+        },
         methods: {
+            ...mapActions(['getLikeSongs']),
+            fetchLikeSongData() {
+                let userId = this.$route.params.id;
+                this.getLikeSongs(userId)
+            }
+        },
+        mounted() {
+          this.fetchLikeSongData();
         },
         computed: {
             ...mapGetters(['songs'])
         },
-        mounted() {
-        },
         components: {
             SongListItem
         }
-
     }
 </script>
 
 <style lang="scss" scoped>
     @import "../assets/public.scss";
 
-    .search-list-wap {
+    .like-list-wap {
         width: 100%;
         padding: 0 $std_padding;
-        /*z-index: 10;*/
     }
 </style>

@@ -13,8 +13,10 @@ import store from './store';
 import Alert from '@/public/Alert'
 import './router/preRouter'
 import '@/api/interceptor'
+import VueCarousel from 'vue-carousel';
 
 Vue.use(VueMaterial)
+Vue.use(VueCarousel);
 // material没有提供全局函数，所以只能自己封装
 Vue.use(installComponent(Prompt, '$prompt'))
 Vue.use(installComponent(ProgressSpinner, '$progress'))

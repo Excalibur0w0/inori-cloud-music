@@ -1,8 +1,8 @@
 <template>
     <div class="sheet-wap">
         <div class="sheet-msg-wap">
-            <div class="avartar">
-                <img src="https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1571107210&di=39c571dac0dc82a931dbfc2ce38e439b&src=http://hbimg.b0.upaiyun.com/cd9a0aa4ee80e126d3bea1f06c305c100fc82d396ffce-lMjAYv_fw658">
+            <div class="avartar" :style="`background: url(http://localhost:5333/provider-music/io/resource/img?imgPath=${sheet.imgPath}) 50% 50%;`">
+<!--                <img src="https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1571107210&di=39c571dac0dc82a931dbfc2ce38e439b&src=http://hbimg.b0.upaiyun.com/cd9a0aa4ee80e126d3bea1f06c305c100fc82d396ffce-lMjAYv_fw658">-->
             </div>
             <div class="info">
                 <div class="features">
@@ -14,8 +14,8 @@
                 </div>
                 <div class="active">
                     <div>{{ sheetAuthorName }}</div>
-                    <div>于{{ sheet.createdAt }}创建</div>
-                    <div v-if="isSelf"> 这是您创建的歌单 </div>
+                    <div>于{{ createdTime }}创建</div>
+<!--                    <div v-if="isSelf"> 这是您创建的歌单 </div>-->
                 </div>
                 <div class="active">
                     <div>播放全部</div>
@@ -49,6 +49,7 @@
     import { mapGetters } from 'vuex'
     import {getSheetInfo, getSongsBySheetId, getUserBasicInfo} from '@/api/request'
     import SongListItem from '@/components/SongListItem'
+    import {transToShow} from '@/utils/transdate'
 
     export default {
         name: 'Sheet',
@@ -98,6 +99,9 @@
             ...mapGetters(['getUser']),
             isSelf () {
                 return this.getUser.uuid === this.sheet.shtCreator;
+            },
+            createdTime() {
+                return transToShow(this.sheet.createdAt);
             }
         },
         components: {
@@ -107,7 +111,7 @@
 </script>
 
 <style lang="scss" scoped>
-    @import "public/public.scss";
+    @import "../assets/public.scss";
 
     .sheet-wap {
         width: 100%;
@@ -120,7 +124,9 @@
 
             .avartar {
                 width: 200px;
+                padding-bottom: 200px;
                 border: 1px solid #EAEAEA;
+                background-size: cover !important;
             }
 
             .info {

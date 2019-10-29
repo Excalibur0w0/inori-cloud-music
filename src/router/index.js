@@ -7,8 +7,10 @@ import UserCenter from '@/pages/UserCenter'
 import Login from '@/pages/Login.vue'
 import Sheet from '@/pages/Sheet'
 import SearchSongList from '@/pages/SearchSongList'
+import LikeSongList from '@/pages/LikeSongList'
+import Discovery from '@/pages/Discovery'
 
-import Test from '@/components/Uploader'
+import Test from '@/components/TestImg'
 
 Vue.use(Router)
 
@@ -39,6 +41,16 @@ const router = new Router({
                     path: '/searchSongList',
                     name: 'SearchSongList',
                     component: SearchSongList
+                },
+                {
+                    path: '/likeSongList/:id',
+                    name: 'LikeSongList',
+                    component: LikeSongList
+                },
+                {
+                    path: '/discovery',
+                    name: 'Discovery',
+                    component: Discovery
                 }
             ]
         },

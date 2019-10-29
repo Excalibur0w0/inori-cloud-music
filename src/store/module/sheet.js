@@ -1,4 +1,4 @@
-import {deleteSheet, createEmptySheet, getAllSheet, getSheetInfo} from '@/api/request'
+import {deleteSheet, createEmptySheet, getAllSheetByUser, getSheetInfo} from '@/api/request'
 
 const sheetModule = {
     state: {
@@ -9,7 +9,7 @@ const sheetModule = {
     },
     mutations: {
         ADD_TO_MY_SHEET(state, sheet) {
-            if (!state.sheetList) {
+            if (!state.mySheetList) {
                 state.mySheetList = []
             }
 
@@ -38,7 +38,7 @@ const sheetModule = {
                 })
         },
         getAllMySheet({commit}, {userId}) {
-            return getAllSheet(userId).then((data) => {
+            return getAllSheetByUser(userId).then((data) => {
                 commit('REFRESH_MY_SHEET_LIST', data);
             });
         },

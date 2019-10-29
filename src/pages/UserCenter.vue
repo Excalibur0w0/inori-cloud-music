@@ -29,7 +29,10 @@
                     </div>
                 </div>
                 <div class="sht-list">
-                    <div class="sht-wap" @click="goToSheet(item)" v-for="(item, index) in mySheets" :key="index + 'sht-create'">
+                    <div :style="`background: url(http://localhost:5333/provider-music/io/resource/img?imgPath=${item.imgPath}) 50% 50%; background-size: cover;`"
+                         class="sht-wap" @click="goToSheet(item)"
+                         v-for="(item, index) in mySheets"
+                         :key="index + 'sht-create'">
                         {{item.shtName}}
                     </div>
                 </div>
@@ -42,7 +45,7 @@
                     </div>
                 </div>
                 <div class="sht-list">
-                    <div class="sht-wap" v-for="(item, index) in sheetList.slice(4)" :key="index + 'sht-create'">
+                    <div  class="sht-wap" v-for="(item, index) in sheetList.slice(4)" :key="index + 'sht-create'">
                         {{item}}
                     </div>
                 </div>
@@ -87,12 +90,7 @@
 </script>
 
 <style lang="scss" scoped>
-    $std_padding: 20px;
-    $sml_padding: 15px;
-    $big_padding: 30px;
-    $sml_margin: 15px;
-    $std_margin: 20px;
-    $big_margin: 30px;
+    @import "../assets/public.scss";
 
     .user-center {
         width: 100%;
@@ -144,12 +142,10 @@
                 display: flex;
                 justify-content: flex-start;
                 flex-wrap: wrap;
-                padding: 0px 0px 0px 0px;
                 margin-bottom: $std_margin;
                 .sht-wap {
-                    width: 100px;
-                    height: 100px;
-                    background: antiquewhite;
+                    width: 12%;
+                    padding-bottom: 12%;
                     margin-right: $sml_margin;
                     margin-top: $big_margin;
                 }

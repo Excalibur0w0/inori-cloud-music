@@ -6,12 +6,14 @@
                 <span class="md-list-item-text">推荐</span>
 
                 <md-list slot="md-expand">
-
                     <md-ripple>
-                        <md-list-item class="md-inset">Europe</md-list-item>
+                        <md-list-item class="md-inset" @click="goToDiscovery">发现</md-list-item>
                     </md-ripple>
+                </md-list>
+
+                <md-list slot="md-expand">
                     <md-ripple>
-                        <md-list-item class="md-inset">South America</md-list-item>
+                        <md-list-item class="md-inset">每日推荐</md-list-item>
                     </md-ripple>
                 </md-list>
             </md-list-item>
@@ -21,8 +23,8 @@
                 <span class="md-list-item-text">我的音乐</span>
 
                 <md-list slot="md-expand">
-                    <md-list-item class="md-inset">
-                        <span class="md-list-item-text" @click.stop.prevent="goToILike">我喜欢</span>
+                    <md-list-item class="md-inset" @click.stop.prevent="goToILike">
+                            我喜欢
                     </md-list-item>
                 </md-list>
             </md-list-item>
@@ -92,11 +94,16 @@
                 })
                 this.$forceUpdate();
             },
+            goToDiscovery() {
+                this.$router.push({
+                    name: 'Discovery'
+                });
+            },
             goToILike() {
                 let userId = this.getUser.uuid
-                
+
                 this.$router.push({
-                    name: 'ILike',
+                    name: 'LikeSongList',
                     params: {
                         id: userId
                     }

@@ -1,4 +1,12 @@
-import {searchSongs, likeSong, dislikeSong, collectSong, cancelCollect} from '@/api/request'
+import {
+    searchSongs,
+    likeSong,
+    dislikeSong,
+    collectSong,
+    cancelCollect,
+    getSongsByLikeId,
+    getSongsBySheetId
+} from '@/api/request'
 
 const songModule = {
     state: {
@@ -19,7 +27,7 @@ const songModule = {
         CLEAR_SONG_LIST(state) {
             state.songList = [];
         },
-        SET_CUR_SONG(state, song) {
+        SET_CUR_SONGINFO(state, song) {
             state.curSongInfo = song
         }
     },
@@ -27,6 +35,16 @@ const songModule = {
         searchSongs({commit}, keywords) {
             return searchSongs(keywords).then(data => {
                 commit('REFRESH_SONG_LIST', data);
+            })
+        },
+        getLikeSongs({commit}, likeId) {
+            return getSongsByLikeId(likeId).then(data => {
+                commit('REFRESH_SONG_LIST', data)
+            })
+        },
+        getSheetSongs({commit}, sheetId) {
+            return getSongsBySheetId(sheetId).then(data => {
+                commit('REFRESH_SONG_LIST', data)
             })
         },
         likeSong({ commit }, songId) {

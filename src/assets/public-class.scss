@@ -1,0 +1,14 @@
+@import "./public.scss";
+
+.title-has-border {
+  margin-top: $big_margin;
+  font-size: $big_size;
+  padding-bottom: $sml_padding;
+  border-bottom: 0.5px #666 solid;
+}
+
+.img-cover {
+  background-size: cover !important;
+  background-position-x: 50% !important;
+  background-position-y: 50% !important;
+}

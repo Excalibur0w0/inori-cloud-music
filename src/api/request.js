@@ -67,13 +67,20 @@ export function deleteSheet(sheetId) {
     })
 }
 
-export function getAllSheet(userId) {
+export function getAllSheetByUser(userId) {
     return Service({
         url: '/provider-music' + '/sheets',
         method: 'GET',
         params: {
             userId: userId
         }
+    })
+}
+
+export function getAllSheet() {
+    return Service({
+        url: '/provider-music' + '/sheets/all',
+        method: 'GET',
     })
 }
 
@@ -272,6 +279,14 @@ export function downloadFile(md5) {
     })
 }
 
+export function getImg() {
+    return Service({
+        url: '/provider-music' + '/io/resource/img',
+        method: 'GET',
+        responseType: 'blob'
+    })
+}
+
 export function likeSong(songId) {
     return Service({
         url: '/provider-music' + '/song/like',
@@ -281,7 +296,7 @@ export function likeSong(songId) {
         })
     })
 }
-export  function dislikeSong(songId) {
+export function dislikeSong(songId) {
     return Service({
         url: '/provider-music' + '/song/like',
         method: 'DELETE',
