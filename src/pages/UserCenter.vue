@@ -6,9 +6,12 @@
             </div>
             <div class="info">
                 <div class="features">
-                    <div>{{getUser ? getUser.username : 'null'}}</div>
+                    <div>{{getUser ? getUser.uname : 'null'}}</div>
                     <div>等级2</div>
                     <div>男</div>
+                    <md-button class="alter-data-btn" @click="goToAlterUser">
+                        修改資料
+                    </md-button>
                 </div>
                 <div class="active">
                     <div>动态</div>
@@ -84,6 +87,12 @@
                     name: 'Sheet',
                     params: { id: sheetId }
                 })
+            },
+            goToAlterUser() {
+                this.$router.push({
+                    name: 'AlterUser',
+                    params: { id: this.getUser.uuid }
+                })
             }
         }
     }
@@ -107,6 +116,7 @@
             .info {
                 width: calc(100% - 200px);
                 margin-left: 20px;
+                margin-right: -14px;
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
@@ -121,6 +131,12 @@
                     }
                     border-bottom: 0.5px #666 solid;
                     padding-bottom: 5px;
+                    position: relative;
+                    .alter-data-btn {
+                        position: absolute;
+                        right: 0;
+                        transform: translate3d(0, -50%, 0);
+                    }
                 }
                 .active {
                     display: flex;

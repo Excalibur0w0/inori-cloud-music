@@ -65,8 +65,8 @@
                    autoplay>
             </audio>
         </div>
-        <div class="music-player-content" v-show="isUp">
-            <div class="content-wap">
+        <div class="music-player-content" v-if="isUp">
+            <div class="comment-song-wap">
                 <div class="song-wap">
                     <div class="song-decor">
                         <div class="avatar"
@@ -107,6 +107,10 @@
                         <div class="lyric"></div>
                     </div>
                 </div>
+
+                <div class="comment-wap">
+                    <comment :song="curPlay"></comment>
+                </div>
             </div>
         </div>
     </div>
@@ -115,10 +119,13 @@
 <script>
     import {mapActions, mapGetters} from 'vuex'
     import {getRightTime} from '@/utils/transdate'
+    import Comment from '@/components/Comment'
 
     export default {
         name: 'MusicPlayer',
-        components: {},
+        components: {
+            Comment,
+        },
         data() {
             return {
                 musicProgress: 0,
@@ -180,7 +187,14 @@
                 this.$refs.player.currentTime = this.currentTime
             },
             pullUpOrDownPlayer() {
-                this.isUp = !this.isUp
+                if(this.curPlay.uuid) {
+                    this.isUp = !this.isUp
+                } else {
+                    this.$alert({
+                        show: true,
+                        content: '请先选择歌曲'
+                    })
+                }
             }
         },
         computed: {
@@ -205,6 +219,9 @@
         width: 100%;
         top: -10px;
         opacity: 0;
+    }
+    .music-player {
+        /*overflow: auto;    //这里overflow:scroll也可以*/
     }
 
     .music-player-bar {
@@ -242,10 +259,15 @@
         height: calc(100vh - 50px);
         position: relative;
         padding-top: $big_padding;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+        &::-webkit-scrollbar {
+            display: none;
+        }
 
         &::before {
             content: ' ';
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
@@ -254,10 +276,10 @@
             z-index: -1;
         }
 
-        .content-wap {
+        .comment-song-wap {
             margin: 0 auto;
             /*width: 80%;*/
-            width: 800px;
+            width: 1200px;
             min-width: 800px;
 
             .song-wap {
@@ -266,7 +288,7 @@
                 width: 100%;
 
                 .song-decor {
-                    width: 50%;
+                    width: 400px;
                     .avatar {
                         width: 100%;
                         padding-bottom: 100%;
@@ -276,19 +298,21 @@
                 }
 
                 .song-info {
-                    width: 50%;
-                    padding-left: $big_padding;
+                    width: calc(100% - 430px);
+                    padding-left: $big_more_margin;
                     .basic-msg {
                         .title {
                             font-size: $sml_title_size;
                         }
                         .desc {
+                            color: $msg_color;
                             margin-top: $std_margin;
                         }
                         .info {
+                            color: $msg_color;
                             margin-top: $sml_margin;
                             > span {
-                                margin-right: $sml_margin;
+                                margin-right: $std_margin;
                             }
                             &:last-child {
                                 margin-right: 0;
@@ -296,6 +320,10 @@
                         }
                     }
                 }
+            }
+
+            .comment-wap {
+                margin-top: $std_margin;
             }
         }
     }

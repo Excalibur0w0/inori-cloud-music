@@ -9,6 +9,8 @@ import Sheet from '@/pages/Sheet'
 import SearchSongList from '@/pages/SearchSongList'
 import LikeSongList from '@/pages/LikeSongList'
 import Discovery from '@/pages/Discovery'
+import AlterUser from '@/pages/AlterUser'
+
 
 import Test from '@/components/TestImg'
 
@@ -51,6 +53,11 @@ const router = new Router({
                     path: '/discovery',
                     name: 'Discovery',
                     component: Discovery
+                },
+                {
+                    path: '/alterUser/:id',
+                    name: 'AlterUser',
+                    component: AlterUser
                 }
             ]
         },

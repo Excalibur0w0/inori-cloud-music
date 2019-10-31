@@ -8,7 +8,7 @@
                 <md-tab id="tab-login" md-label="登陆">
                     <md-field>
                         <label>请输入用户名</label>
-                        <md-input v-model="username"></md-input>
+                        <md-input v-model="uname"></md-input>
                     </md-field>
 
                     <md-field>
@@ -20,7 +20,7 @@
                 <md-tab id="tab-register" md-label="注册">
                     <md-field>
                         <label>请输入用户名</label>
-                        <md-input v-model="username"></md-input>
+                        <md-input v-model="uname"></md-input>
                     </md-field>
                     <md-field>
                         <label>请输入密码</label>
@@ -53,7 +53,7 @@
             return {
                 showDialog: false,
                 password: '',
-                username: '',
+                uname: '',
                 tabId: 'tab-login',
             }
         },
@@ -65,7 +65,7 @@
             submit () {
                 if (this.tabId === 'tab-login') {
                     this.login({
-                        username: this.username,
+                        uname: this.uname,
                         password: this.password
                     }).then(() => {
                         this.$router.push("/userCenter")

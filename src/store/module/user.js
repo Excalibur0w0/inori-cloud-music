@@ -16,7 +16,7 @@ const userModule = {
             }
             user = state.user
             user.uuid = userMsg.uuid
-            user.username = uname
+            user.uname = uname
             user.city = city
             user.age = age
             setStore({
@@ -39,8 +39,8 @@ const userModule = {
     },
     actions: {
         login({commit}, payload) {
-            let {username, password} = payload
-            return doLogin(username, password)
+            let {uname, password} = payload
+            return doLogin(uname, password)
                 .then(res => {
                     let {user, jwt} = res
                     commit('SET_USER', user)

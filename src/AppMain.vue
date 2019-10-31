@@ -31,30 +31,37 @@
 </script>
 
 <style lang="scss">
-        .header-wap {
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 20;
-        }
+    @import './assets/scroll-bar';
 
-        .menu-list-wap {
-            min-width: 320px;
-            position: fixed;
-            top: 64px;
-        }
+    body, div {
+        @extend .scroll-bar;
+    }
 
-        .content-wap {
-            display: flex;
-            justify-content: flex-start;
-            margin-left: 320px;
-            margin-top: 64px;
-        }
+    .header-wap {
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 20;
+    }
 
-        .music-player-wap {
-            z-index: 20;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
+    .menu-list-wap {
+        min-width: 320px;
+        position: fixed;
+        top: 64px;
+    }
+
+    .content-wap {
+        display: flex;
+        justify-content: flex-start;
+        margin-left: 320px;
+        margin-top: 64px;
+    }
+
+    .music-player-wap {
+        z-index: 20;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+    }
+
 </style>

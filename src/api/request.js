@@ -3,10 +3,10 @@ import qs from 'qs'
 import SparkMD5 from 'spark-md5'
 
 
-export function doLogin(username, password) {
+export function doLogin(uname, password) {
     return Service({
         url: '/provider-auth' + '/auth/login',
-        params: {username: username, password: password},
+        params: {username: uname, password: password},
         method: 'POST'
     })
 }
@@ -324,6 +324,27 @@ export function cancelCollect(songId, sheetId) {
         data: qs.stringify({
             songId: songId,
             sheetId: sheetId
+        })
+    })
+}
+
+export function getCommnetsBySongId(songId) {
+    return Service({
+        url: '/provider-comment' + '/comments',
+        method: 'GET',
+        params: {
+            songId: songId
+        }
+    })
+}
+
+export function createComment(songId, content)  {
+    return Service({
+        url: '/provider-comment' + '/comment',
+        method: 'POST',
+        data: qs.stringify({
+            songId,
+            content
         })
     })
 }

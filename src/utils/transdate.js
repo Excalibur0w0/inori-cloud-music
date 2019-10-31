@@ -1,6 +1,6 @@
 export const transToShow = (timestamp) => {
     let d = new Date(timestamp);
-    return d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日"
+    return d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日 " + d.getHours() + ": " + d.getMinutes()
 }
 
 
