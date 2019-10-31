@@ -1,24 +1,32 @@
 <template>
     <div class="alter-user-wap">
         <div class="title">更改用戶</div>
-        <div class="form-wap">
-            <md-field>
-                <label>账号昵称:</label>
-                <md-input></md-input>
-            </md-field>
+        <div class="main">
+            <div class="form-wap">
+                    <div class="avatar" >
 
-            <div class="block">
-                <h3>生日</h3>
-                <md-datepicker v-model="birthday"/>
+                    </div>
+                <md-field>
+                    <label>账号昵称:</label>
+                    <md-input></md-input>
+                </md-field>
+
+                <div class="block">
+                    <h3>生日</h3>
+                    <md-datepicker v-model="birthday"/>
+                </div>
+
+                <md-radio v-model="radio" value="男">男 <small>(Male)</small></md-radio>
+                <md-radio v-model="radio" value="女">女 <small>(Female)</small></md-radio>
+                <md-field>
+                    <label>简单描述自己:</label>
+                    <md-textarea></md-textarea>
+                    <md-icon>description</md-icon>
+                </md-field>
+                <md-button>
+                    确认提交
+                </md-button>
             </div>
-
-            <md-radio v-model="radio" value="男">男 <small>(Male)</small></md-radio>
-            <md-radio v-model="radio" value="女">女 <small>(Female)</small></md-radio>
-            <md-field>
-                <label>简单描述自己:</label>
-                <md-textarea></md-textarea>
-                <md-icon>description</md-icon>
-            </md-field>
         </div>
     </div>
 </template>
@@ -48,9 +56,20 @@
             padding-bottom: $sml_padding;
             border-bottom: .5px #666 solid;
         }
+        > .main {
+            display: flex;
+            justify-content: flex-start;
 
-        > .form-wap {
-            width: 500px;
+            > .form-wap {
+                width: 500px;
+                > .avatar {
+                    margin-top: $std_margin;
+                    width: 180px;
+                    height: 180px;
+                    /*border-radius: 50%;*/
+                    background-color: #73d2f3;
+                }
+            }
         }
     }
 </style>
