@@ -61,7 +61,7 @@
                    @play="play"
                    @pause="pause"
                    @loadedmetadata="ready"
-                   :src="'http://localhost:5333/provider-music/io/resource/audio?md5=' + curPlay.storePath"
+                   :src="audioSource"
                    autoplay>
             </audio>
         </div>
@@ -93,7 +93,7 @@
                     </div>
                     <div class="song-info">
                         <div class="basic-msg">
-                            <div class="title" >
+                            <div class="title">
                                 {{curPlay.songName}}
                             </div>
                             <div class="desc">阿哦，似乎这首歌没有简介</div>
@@ -187,7 +187,7 @@
                 this.$refs.player.currentTime = this.currentTime
             },
             pullUpOrDownPlayer() {
-                if(this.curPlay.uuid) {
+                if (this.curPlay.uuid) {
                     this.isUp = !this.isUp
                 } else {
                     this.$alert({
@@ -199,6 +199,13 @@
         },
         computed: {
             ...mapGetters(['curPlay']),
+            audioSource() {
+                if (this.curPlay && this.curPlay.storePath) {
+                    return 'http://localhost:5333/provider-music/io/resource/audio?md5=' + this.curPlay.storePath
+                } else {
+                    return ''
+                }
+            },
             formatDuration() {
                 return getRightTime(this.duration)
             },
@@ -220,6 +227,7 @@
         top: -10px;
         opacity: 0;
     }
+
     .music-player {
         /*overflow: auto;    //这里overflow:scroll也可以*/
     }
@@ -261,6 +269,7 @@
         padding-top: $big_padding;
         overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
+
         &::-webkit-scrollbar {
             display: none;
         }
@@ -289,6 +298,7 @@
 
                 .song-decor {
                     width: 400px;
+
                     .avatar {
                         width: 100%;
                         padding-bottom: 100%;
@@ -300,20 +310,25 @@
                 .song-info {
                     width: calc(100% - 430px);
                     padding-left: $big_more_margin;
+
                     .basic-msg {
                         .title {
                             font-size: $sml_title_size;
                         }
+
                         .desc {
                             color: $msg_color;
                             margin-top: $std_margin;
                         }
+
                         .info {
                             color: $msg_color;
                             margin-top: $sml_margin;
+
                             > span {
                                 margin-right: $std_margin;
                             }
+
                             &:last-child {
                                 margin-right: 0;
                             }

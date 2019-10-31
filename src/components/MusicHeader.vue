@@ -38,7 +38,7 @@
                                 <md-menu-item @click="clearStoreUser">测试：清除USER</md-menu-item>
                                 <md-menu-item>My Item 3</md-menu-item>
                                 <md-menu-item @click="() => {}">
-                                    <uploader :content="'上传'"></uploader>
+                                    <uploader :content="'上传'" ></uploader>
                                 </md-menu-item>
                             </md-menu-content>
                         </md-menu>
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-    import { mapActions } from 'vuex'
+    import {mapActions, mapGetters} from 'vuex'
     import Uploader from '@/components/Uploader'
 
     export default {
@@ -84,9 +84,9 @@
                     })
                 }
             },
-            fakeUpload() {
-                this.$refs.uploader.click();
-            }
+        },
+        computed: {
+            ...mapGetters(['getUser'])
         },
         components: {
             Uploader

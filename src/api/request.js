@@ -348,3 +348,13 @@ export function createComment(songId, content)  {
         })
     })
 }
+
+export function uploadAvatar(base64) {
+    return Service({
+        url: '/provider-auth' + '/user/upload/avatar',
+        method: 'POST',
+        data: qs.stringify({
+            base64
+        })
+    })
+}

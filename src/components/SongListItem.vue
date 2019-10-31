@@ -52,7 +52,6 @@
                 return getRightTime(duration);
             },
             clickOneSong () {
-                console.log('running')
                 let song = this.songInfo.song;
                 if (song && song.storePath) {
                     downloadFile(song.storePath)
