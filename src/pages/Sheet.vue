@@ -17,10 +17,26 @@
 <!--                    <div v-if="isSelf"> 这是您创建的歌单 </div>-->
                 </div>
                 <div class="active">
-                    <div>播放全部</div>
-                    <div>收藏</div>
-                    <div>分享</div>
-                    <div>下载全部</div>
+                    <div>
+                        <md-ripple>
+                            播放全部
+                        </md-ripple>
+                    </div>
+                    <div>
+                        <md-ripple>
+                            收藏
+                        </md-ripple>
+                    </div>
+                    <div>
+                        <md-ripple>
+                            分享
+                        </md-ripple>
+                    </div>
+                    <div>
+                        <md-ripple>
+                            下载全部
+                        </md-ripple>
+                    </div>
                 </div>
                 <div>标签： </div>
                 <div>简介： {{sheet.shtDesc}}</div>
@@ -28,19 +44,19 @@
             <div class=""></div>
         </div>
 
-        <md-table>
-            <md-table-row>
-                <md-table-head>操作</md-table-head>
-                <md-table-head>音乐标题</md-table-head>
-                <md-table-head>歌手</md-table-head>
-                <md-table-head>专辑</md-table-head>
-                <md-table-head>时常</md-table-head>
-            </md-table-row>
+            <md-table>
+                <md-table-row>
+                    <md-table-head>操作</md-table-head>
+                    <md-table-head>音乐标题</md-table-head>
+                    <md-table-head>歌手</md-table-head>
+                    <md-table-head>专辑</md-table-head>
+                    <md-table-head>时常</md-table-head>
+                </md-table-row>
 
 
-            <song-list-item v-for="(item, index) in sheetList" :song-info="item" :key="'songs' + index">
-            </song-list-item>
-        </md-table>
+                <song-list-item v-for="(item, index) in sheetList" :song-info="item" :key="'songs' + index" @select-one-song="changePlayList">
+                </song-list-item>
+            </md-table>
     </div>
 </template>
 
@@ -92,7 +108,11 @@
                       this.sheetList = data
                   })
               })
-          }
+          },
+            // 说明选择了一首该歌单的歌曲
+            changePlayList() {
+
+            }
         },
         computed: {
             ...mapGetters(['getUser']),

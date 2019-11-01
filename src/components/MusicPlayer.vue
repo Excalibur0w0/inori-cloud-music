@@ -70,7 +70,7 @@
                 <div class="song-wap">
                     <div class="song-decor">
                         <div class="avatar"
-                             :style="`background: url(http://localhost:5333/provider-music/io/resource/img?imgPath=${curPlay.imgPath}) 50% 50% / cover;`">
+                             :style="`background: url(${musicImgPath + curPlay.imgPath}) 50% 50% / cover;`">
                         </div>
                         <div class="operation">
                             <md-button>
@@ -198,10 +198,10 @@
             }
         },
         computed: {
-            ...mapGetters(['curPlay']),
+            ...mapGetters(['curPlay', 'audioPath', 'musicImgPath']),
             audioSource() {
                 if (this.curPlay && this.curPlay.storePath) {
-                    return 'http://localhost:5333/provider-music/io/resource/audio?md5=' + this.curPlay.storePath
+                    return this.audioPath + this.curPlay.storePath
                 } else {
                     return ''
                 }

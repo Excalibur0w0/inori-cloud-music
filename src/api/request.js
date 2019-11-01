@@ -351,10 +351,25 @@ export function createComment(songId, content)  {
 
 export function uploadAvatar(base64) {
     return Service({
-        url: '/provider-auth' + '/user/upload/avatar',
+        url: '/provider-auth' + '/io/upload/avatar',
         method: 'POST',
         data: qs.stringify({
             base64
+        })
+    })
+}
+
+export function updateUser({ description, uname, birthday, gender }) {
+    let numberBirthday = new Date(birthday).valueOf();
+
+    return Service({
+        url: '/provider-auth' + '/user',
+        method: 'PUT',
+        data: qs.stringify({
+            uname,
+            birthday: numberBirthday,
+            gender,
+            description
         })
     })
 }

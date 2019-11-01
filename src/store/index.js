@@ -5,6 +5,7 @@ import sheetModule from '@/store/module/sheet'
 import songModule from '@/store/module/song'
 import audioModule from '@/store/module/audio'
 import commentModule from '@/store/module/comment'
+import sourcePathModule from '@/store/module/sourcePath'
 
 Vue.use(Vuex)
 
@@ -14,7 +15,8 @@ const store = new Store({
         sheetModule,
         songModule,
         audioModule,
-        commentModule
+        commentModule,
+        sourcePathModule
     }
 })
 

@@ -2,7 +2,7 @@
     <div class="user-center">
         <div class="user-wap">
             <div class="avartar">
-                <img src="https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1571107210&di=39c571dac0dc82a931dbfc2ce38e439b&src=http://hbimg.b0.upaiyun.com/cd9a0aa4ee80e126d3bea1f06c305c100fc82d396ffce-lMjAYv_fw658">
+                <img :src="`${avatarPath + getUser.uuid}`">
             </div>
             <div class="info">
                 <div class="features">
@@ -18,9 +18,9 @@
                     <div>关注</div>
                     <div>粉丝</div>
                 </div>
-                <div>个人介绍：</div>
-                <div>社交网络：</div>
-                <div>所在地区：<span>四川省 成都市</span></div>
+                <div>个人介绍： {{getUser.description}}</div>
+                <div>社交网络： 未绑定</div>
+                <div>所在地区：<span>{{getUser.city }}</span></div>
             </div>
             <div class=""></div>
         </div>
@@ -32,7 +32,7 @@
                     </div>
                 </div>
                 <div class="sht-list">
-                    <div :style="`background: url(http://localhost:5333/provider-music/io/resource/img?imgPath=${item.imgPath}) 50% 50%; background-size: cover;`"
+                    <div :style="`background: url(${musicImgPath + item.imgPath}) 50% 50%; background-size: cover;`"
                          class="sht-wap" @click="goToSheet(item)"
                          v-for="(item, index) in mySheets"
                          :key="index + 'sht-create'">
@@ -73,7 +73,9 @@
         computed: {
             ...mapGetters([
                 'getUser',
-                'mySheets'
+                'mySheets',
+                'avatarPath',
+                'musicImgPath'
             ])
         },
         mounted() {
@@ -112,6 +114,10 @@
             .avartar {
                 width: 200px;
                 border: 1px solid #EAEAEA;
+                > img {
+                    width: 100%;
+                    object-fit: cover;
+                }
             }
             .info {
                 width: calc(100% - 200px);

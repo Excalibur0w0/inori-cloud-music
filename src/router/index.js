@@ -12,7 +12,7 @@ import Discovery from '@/pages/Discovery'
 import AlterUser from '@/pages/AlterUser'
 
 
-import Test from '@/components/TestImg'
+import Test from '@/components/ImageCuter'
 
 Vue.use(Router)
 

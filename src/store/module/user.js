@@ -1,5 +1,6 @@
-import {doLogin, getUserInfoByToken} from '@/api/request'
+import {doLogin, getUserInfoByToken, updateUser} from '@/api/request'
 import {setStore, clearStore, getStore} from '@/utils/storeUtils'
+import {dateFormat} from '@/utils/transdate'
 
 const userModule = {
     state: {
@@ -8,7 +9,7 @@ const userModule = {
     },
     mutations: {
         SET_USER(state, userMsg) {
-            let {uname, city, age} = userMsg
+            let {uname, city, age, description, gender, birthday} = userMsg
             let user = null
 
             if (state.user == null) {
@@ -18,7 +19,12 @@ const userModule = {
             user.uuid = userMsg.uuid
             user.uname = uname
             user.city = city
+            user.gender = gender
             user.age = age
+            if (birthday) {
+                user.birthday = dateFormat("YYYY-mm-dd", new Date(birthday))
+            }
+            user.description = description
             setStore({
                 name: 'userInfo',
                 content: user
@@ -61,6 +67,11 @@ const userModule = {
                 commit('SET_USER', user)
             }).catch(err => {
                 return Promise.reject(err)
+            })
+        },
+        updateUser({commit}, form) {
+            return updateUser(form).then(user => {
+                commit('SET_USER', user)
             })
         }
     },

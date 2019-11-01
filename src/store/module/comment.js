@@ -12,7 +12,7 @@ const commentModule = {
             if (!Array.isArray(state.commentList)) {
                 state.commentList = []
             }
-            state.commentList.push(comment)
+            state.commentList.unshift(comment)
         },
         CLEAR_COMMENTS(state) {
             state.commentList = null;

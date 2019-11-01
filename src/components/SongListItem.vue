@@ -1,5 +1,5 @@
 <template>
-    <md-table-row @dblclick.prevent.stop="selectOneSong">
+    <md-table-row @dblclick="selectOneSong">
         <md-table-cell>
                 <md-button @click.prevent.stop="clickHeart" class="md-icon-button  md-accent">
                     <md-icon>{{songInfo.isFavorite ? "favorite" : "favorite_border"}}</md-icon>
@@ -78,6 +78,7 @@
             },
             selectOneSong() {
                 this.changeCurPlay(this.songInfo);
+                this.$emit('select-one-song', this.songInfo);
             }
         },
         computed: {

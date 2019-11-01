@@ -9,8 +9,9 @@
                         <input @change="fileListChanged" ref="selectAvatar" style="display: none;" id="select-avatar"
                                type="file">
                     </div>
+                    <image-cuter :img="base64" :show-cuter="showCuter" @ok="getCutImg" @cancel="() => showCuter = false"></image-cuter>
                     <div class="border-line"></div>
-                    <div class="cur-avatar">
+                    <div class="cur-avatar" :style="`background: url(${avatarPath + getUser.uuid}) 50% / cover;`">
                     </div>
                 </div>
                 <md-field>
@@ -30,7 +31,7 @@
                     <md-textarea v-model="form.description"></md-textarea>
                     <md-icon>description</md-icon>
                 </md-field>
-                <md-button>
+                <md-button @click="submit">
                     确认提交
                 </md-button>
             </div>
@@ -38,25 +39,18 @@
     </div>
 </template>
 
-<!--                <div class="avatar">-->
-<!--                    <vue-cropper-->
-<!--                            autoCrop-->
-<!--                            ref="cropper"-->
-<!--                            :img="cropOption.img"-->
-<!--                            fixedBox-->
-<!--                            :fixedNumber="[1,1]"-->
-<!--                            centerBox/>-->
-<!--                </div>-->
 
 <script>
     import {VueCropper} from 'vue-cropper'
-    import {mapGetters, mapState} from 'vuex'
+    import {mapActions, mapGetters, mapState} from 'vuex'
+    import ImageCuter from '@/components/ImageCuter'
+    import {uploadAvatar} from '@/api/request'
 
     export default {
         name: 'AlterUser',
         watch: {
-          user(oldVal, newVal) {
-              this.form.birthday = newVal.birthday;
+          getUser(oldVal, newVal) {
+              this.refreshData(newVal)
           }
         },
         data() {
@@ -73,15 +67,27 @@
                     outputType: 'png',
                 },
                 base64: '',
+                showCuter: false,
             }
         },
         components: {
             VueCropper,
+            ImageCuter
         },
         methods: {
-            getCropData() {
-                this.$refs.cropper.getCropData(base64 => {
-                    this.base64 = base64
+            ...mapActions(['updateUser']),
+            refreshData(newVal) {
+                this.form.birthday = newVal.birthday;
+                this.form.description = newVal.description;
+                this.form.gender = newVal.gender;
+                this.form.uname = newVal.uname;
+            },
+            submit() {
+                this.updateUser(this.form).then(() => {
+                    this.$alert({
+                        show: true,
+                        content: '更改成功'
+                    })
                 })
             },
             readFile() {
@@ -97,11 +103,26 @@
                 let file = files[0]
                 let url = window.URL.createObjectURL(file)
                 this.base64 = url
+                this.showCuter = true
+            },
+            getCutImg(base64) {
+                // console.log(base64)
+                this.base64 = base64
+                this.showCuter =false;
+                this.uploadImg(this.base64)
+            },
+            uploadImg(base64) {
+                uploadAvatar(base64)
+            }
+        },
+        mounted() {
+            if (this.getUser) {
+                this.refreshData(this.getUser)
             }
         },
         computed: {
-            ...mapGetters(['getUser']),
-            ...mapState(['user'])   // 只应该在watch中监听
+            ...mapGetters(['getUser', 'musicImgPath', 'avatarPath']),
+            ...mapState(['user']),   // 只应该在watch中监听
         }
 
     }

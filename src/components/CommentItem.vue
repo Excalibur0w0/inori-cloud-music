@@ -1,7 +1,7 @@
 <template>
     <div class="comment-item">
         <div class="comment-avatar">
-
+            <img :src="userAvatar" alt="">
         </div>
         <div class="comment-content-wap">
             <div class="comment-content">
@@ -22,6 +22,7 @@
 
 <script>
     import {transToShow} from '@/utils/transdate'
+    import { mapGetters } from 'vuex';
 
     export default {
         name: 'CommentItem',
@@ -34,6 +35,12 @@
         methods: {
             transDate(date) {
                 return transToShow(date)
+            }
+        },
+        computed: {
+            ...mapGetters(['avatarPath']),
+            userAvatar() {
+                return this.avatarPath + this.comment.avatar
             }
         }
     }
@@ -53,6 +60,10 @@
             height: 60px;
             background-color: white;
             border-radius: 50%;
+            overflow: hidden;
+            > img {
+                object-fit: cover;
+            }
         }
         .comment-content-wap {
             width: 100%;
