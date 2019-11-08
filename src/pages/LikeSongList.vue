@@ -11,6 +11,7 @@
             <song-list-item v-for="(item, index) in songs" :song-info="item" :key="'songs' + index">
             </song-list-item>
         </md-table>
+        <h2 v-if="!(songs && songs.length > 0)">暂时没有收藏歌曲哦!(⊙o⊙)…</h2>
     </div>
 </template>
 

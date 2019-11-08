@@ -2,14 +2,14 @@
     <div class="music-player">
         <div class="music-player-bar">
             <div class="operation">
-                <md-button class="md-icon-button">
+                <md-button class="md-icon-button" @click="clickPrev">
                     <md-icon>skip_previous</md-icon>
                 </md-button>
                 <md-button class="md-icon-button" @click="pauseOrPlay">
                     <md-icon v-if="!isPause">pause</md-icon>
                     <md-icon v-if="isPause">play_arrow</md-icon>
                 </md-button>
-                <md-button class="md-icon-button">
+                <md-button class="md-icon-button" @click="clickNext">
                     <md-icon>skip_next</md-icon>
                 </md-button>
             </div>
@@ -40,16 +40,30 @@
 
             <div class="sound-progress-bar">
                 <md-progress-bar md-mode="determinate" :md-value="soundLevel"></md-progress-bar>
-                <input class="progress-cover" type="range" v-model.number="soundLevel">
+                <input @change="changeVolume" class="progress-cover" type="range" v-model.number="soundLevel">
             </div>
 
             <div class="list-operation">
                 <md-button class="md-icon-button">
                     <md-icon>repeat</md-icon>
                 </md-button>
-                <md-button class="md-icon-button">
-                    <md-icon>reorder</md-icon>
-                </md-button>
+
+                <md-menu md-align-trigger  :md-offset-y="-50 * plays.length">
+                    <md-button @click.prevent.stop class="md-icon-button" md-menu-trigger>
+                        <md-icon>
+                            reorder
+                        </md-icon>
+                    </md-button>
+
+                    <md-menu-content class="play-list-wap" :class="isUp ? '' : ''">
+                        <md-menu-item v-for="(song, index) in plays" :key="'playList' + index" @click.prevent.stop="selectSongToPlay(index)">
+                            {{song.songName}}
+<!--                            <md-icon v-show="index === GET_CUR_INDEX()">-->
+<!--                                volume_down-->
+<!--                            </md-icon>-->
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
                 <md-button class="md-icon-button" @click.stop.prevent="pullUpOrDownPlayer">
                     <md-icon v-if="!isUp">arrow_upward</md-icon>
                     <md-icon v-if="isUp">arrow_downward</md-icon>
@@ -73,14 +87,29 @@
                              :style="`background: url(${musicImgPath + curPlay.imgPath}) 50% 50% / cover;`">
                         </div>
                         <div class="operation">
-                            <md-button>
-                                <md-icon>favorite_border</md-icon>
+                            <md-button @click="clickHeart">
+                                <md-icon v-if="!curPlay.isFavorite">favorite_border</md-icon>
+                                <md-icon v-if="curPlay.isFavorite">favorite</md-icon>
                                 喜欢
                             </md-button>
-                            <md-button>
-                                <md-icon>star_border</md-icon>
-                                收藏
-                            </md-button>
+
+                            <md-menu class="collect-menu-offset">
+                                <md-button md-menu-trigger>
+                                    <md-icon>star_border</md-icon>
+                                    收藏
+                                </md-button>
+
+                                <md-menu-content class="show-menu-content" v-if="mySheets && mySheets.length > 0">
+                                    <md-menu-item  v-for="(sheet, index) in mySheets" :key="'itemSheets' + index" @click.prevent.stop="addToList(sheet)">
+                                        {{sheet.shtName}}
+                                    </md-menu-item>
+                                </md-menu-content >
+                                <md-menu-content class="show-menu-content"  v-if="!(mySheets && mySheets.length > 0)">
+                                    <md-menu-item>
+                                        请您先创建歌单
+                                    </md-menu-item>
+                                </md-menu-content>
+                            </md-menu>
                             <md-button>
                                 <md-icon>cloud_download</md-icon>
                                 下载
@@ -109,7 +138,7 @@
                 </div>
 
                 <div class="comment-wap">
-                    <comment :song="curPlay"></comment>
+                    <comment v-if="forceRefresh" :song="curPlay"></comment>
                 </div>
             </div>
         </div>
@@ -117,7 +146,7 @@
 </template>
 
 <script>
-    import {mapActions, mapGetters} from 'vuex'
+    import {mapActions, mapGetters } from 'vuex'
     import {getRightTime} from '@/utils/transdate'
     import Comment from '@/components/Comment'
 
@@ -130,17 +159,58 @@
             return {
                 musicProgress: 0,
                 mapToDuration: 0,
-                soundLevel: 0,
+                soundLevel: 100,
                 buffer: 0,
                 isMute: false,
                 isPause: true,
                 duration: 0,
                 currentTime: 0,
-                isUp: false
+                isUp: false,
+                forceRefresh: true
             }
         },
         methods: {
-            ...mapActions(['changeCurPlay']),
+            ...mapActions(['changeCurPlay', 'nextSong', 'prevSong', 'setCurIndex', 'dislikeSong', 'likeSong', 'collectSong']),
+
+            clickHeart() {
+                if (this.curPlay.isFavorite) {
+                    this.dislikeSong(this.curPlay.uuid).then(() => {
+                        this.curPlay.isFavorite = false
+                    })
+                } else {
+                    this.likeSong(this.curPlay.uuid).then(() => {
+                        this.curPlay.isFavorite = true
+                    })
+                }
+            },
+            addToList(sheet) {
+                let sheetId = sheet.uuid;
+
+                this.collectSong({
+                    songId: this.curPlay.uuid,
+                    sheetId
+                })
+            },
+            clickNext() {
+                console.log(this.curIndex)
+                this.forceRefresh = false;
+              this.nextSong().then(() => {
+                  this.forceRefresh = true;
+              })
+            },
+            clickPrev() {
+                console.log(this.curIndex)
+                this.forceRefresh = false;
+                this.prevSong().then(() => {
+                    this.forceRefresh = true;
+                })
+            },
+            selectSongToPlay(index) {
+                this.setCurIndex(index)
+            },
+            changeVolume() {
+                this.$refs.player.volume = this.soundLevel / 100;
+            },
             pauseOrPlay() {
                 if (this.isPause) {
                     this.$refs.player.play()
@@ -198,7 +268,7 @@
             }
         },
         computed: {
-            ...mapGetters(['curPlay', 'audioPath', 'musicImgPath']),
+            ...mapGetters(['curPlay', 'audioPath', 'musicImgPath', 'plays', 'curIndex', 'mySheets']),
             audioSource() {
                 if (this.curPlay && this.curPlay.storePath) {
                     return this.audioPath + this.curPlay.storePath
@@ -226,6 +296,18 @@
         width: 100%;
         top: -10px;
         opacity: 0;
+    }
+
+    .collect-menu-offset {
+        margin-top: 6px;
+    }
+
+    .show-menu-content {
+        z-index: 20;
+    }
+
+    .play-list-wap {
+        z-index: 20 !important;
     }
 
     .music-player {

@@ -1,4 +1,11 @@
-import {doLogin, getUserInfoByToken, updateUser} from '@/api/request'
+import {
+    doLogin,
+    doRegister,
+    getUserInfoByToken,
+    getUserInfoByTokenFreshCache,
+    getUserInfoByTokenRefreshCache,
+    updateUser
+} from '@/api/request'
 import {setStore, clearStore, getStore} from '@/utils/storeUtils'
 import {dateFormat} from '@/utils/transdate'
 
@@ -44,6 +51,10 @@ const userModule = {
         }
     },
     actions: {
+        register({commit}, payload) {
+            let {uname, password} = payload;
+            return doRegister(uname, password)
+        },
         login({commit}, payload) {
             let {uname, password} = payload
             return doLogin(uname, password)
@@ -62,17 +73,21 @@ const userModule = {
             commit('CLEAR_MODULE')
         },
         getInfo({commit}) {
-            return getUserInfoByToken().then(res => {
-                let { user } = res
+            return getUserInfoByToken().then(user => {
+                commit('SET_USER', user)
+            }).catch(err => {
+                return Promise.reject(err)
+            })
+        },
+        getInfoNotCache({commit}) {
+            return getUserInfoByTokenRefreshCache().then(user => {
                 commit('SET_USER', user)
             }).catch(err => {
                 return Promise.reject(err)
             })
         },
         updateUser({commit}, form) {
-            return updateUser(form).then(user => {
-                commit('SET_USER', user)
-            })
+            return updateUser(form)
         }
     },
     getters: {

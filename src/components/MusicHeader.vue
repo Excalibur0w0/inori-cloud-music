@@ -22,7 +22,7 @@
                         </router-link>
                     </md-button>
 
-                    <md-button class="md-icon-button">
+                    <md-button class="md-icon-button" @click="goBack">
                         <md-icon>refresh</md-icon>
                     </md-button>
 
@@ -66,6 +66,9 @@
                 this.logout().then(() => {
                     this.$router.push("/login")
                 });
+            },
+            goBack() {
+                this.$router.go(-1);
             },
             clearStoreUser () {
                 this.$store.state.userModule.user = null;

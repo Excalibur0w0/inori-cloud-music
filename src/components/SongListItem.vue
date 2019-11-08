@@ -16,11 +16,14 @@
                     </md-icon>
                 </md-button>
 
-                <md-menu-content>
-                    <md-menu-item v-for="(sheet, index) in mySheets" :key="'itemSheets' + index" @click.prevent.stop="addToList(sheet)">
-<!--                        <md-icon>phone</md-icon>-->
-<!--                        <span></span>-->
+                <md-menu-content v-if="mySheets && mySheets.length > 0">
+                    <md-menu-item  v-for="(sheet, index) in mySheets" :key="'itemSheets' + index" @click.prevent.stop="addToList(sheet)">
                         {{sheet.shtName}}
+                    </md-menu-item>
+                </md-menu-content>
+                <md-menu-content v-if="!(mySheets && mySheets.length > 0)">
+                    <md-menu-item>
+                        请您先创建歌单
                     </md-menu-item>
                 </md-menu-content>
             </md-menu>
@@ -52,7 +55,8 @@
                 return getRightTime(duration);
             },
             clickOneSong () {
-                let song = this.songInfo.song;
+                let song = this.songInfo;
+
                 if (song && song.storePath) {
                     downloadFile(song.storePath)
                 }

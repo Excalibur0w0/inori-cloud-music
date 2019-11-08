@@ -11,6 +11,14 @@ export function doLogin(uname, password) {
     })
 }
 
+export function doRegister(uname, password) {
+    return Service({
+        url: '/provider-auth' + '/auth/register',
+        params: {username: uname, password: password},
+        method: 'POST'
+    })
+}
+
 export function getUserBasicInfo(userId) {
     return Service({
         url: '/provider-auth' + '/user/getUserBasicInfo',
@@ -30,6 +38,17 @@ export function getUserInfoByToken() {
         }
     })
 }
+
+export function getUserInfoByTokenRefreshCache() {
+    return Service({
+        url: '/provider-auth' + '/auth/getUserInfoByTokenRefreshCache',
+        method: 'GET',
+        header: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    })
+}
+
 
 export function createEmptySheet(sheetName, desc, userId) {
 
@@ -67,9 +86,19 @@ export function deleteSheet(sheetId) {
     })
 }
 
-export function getAllSheetByUser(userId) {
+export function getAllSheetsByCreator(userId) {
     return Service({
-        url: '/provider-music' + '/sheets',
+        url: '/provider-music' + '/sheets/createdBy',
+        method: 'GET',
+        params: {
+            userId: userId
+        }
+    })
+}
+
+export function  getAllSheetsByCollector(userId) {
+    return Service({
+        url: '/provider-music' + '/sheets/collectedBy',
         method: 'GET',
         params: {
             userId: userId
@@ -91,6 +120,26 @@ export function getSheetInfo(sheetId) {
         params: {
             sheetId: sheetId
         }
+    })
+}
+
+export function collectSheet(sheetId) {
+    return Service({
+        url: '/provider-music' + '/sheet/collect',
+        method: 'POST',
+        data: qs.stringify({
+            sheetId: sheetId
+        })
+    })
+}
+
+export function cancelCollectSheet(sheetId) {
+    return Service({
+        url: '/provider-music' + '/sheet/collect',
+        method: 'DELETE',
+        data: qs.stringify({
+            sheetId: sheetId
+        })
     })
 }
 
@@ -154,7 +203,18 @@ export function getSongsByLikeId(userId) {
     })
 }
 
+export function isFileExist(md5) {
+    return Service({
+        url: '/provider-music' + '/io/isFileExist',
+        method: 'GET',
+        params: {
+            md5: md5
+        }
+    })
+}
+
 export function uploadSingleFile(file, uploadId) {
+
     const chunkSize = 1024 * 1024
     let blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice
     let chunkTotal = Math.ceil(file.size / chunkSize)
@@ -174,7 +234,15 @@ export function uploadSingleFile(file, uploadId) {
             let md5Hash = sparkTotal.end()
             // eslint-disable-next-line no-console
             console.info('computed hash', md5Hash)  // Compute hash
-            asyncUploadChunk(file, chunkSize, md5Hash, uploadId)
+            // 完成hash之后, 通过md5查询是否歌曲已存在
+            isFileExist(md5Hash).then((success) => {
+                // console.log(success)
+                if (success) {
+                    alert("该歌曲已经上传过了")
+                } else {
+                    asyncUploadChunk(file, chunkSize, md5Hash, uploadId)
+                }
+            })
         }
     }
 

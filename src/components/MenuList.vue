@@ -46,10 +46,21 @@
                 </md-list>
             </md-list-item>
 
-            <!--                <md-ripple></md-ripple>-->
-            <md-list-item>
+            <md-list-item md-expand >
                 <md-icon>star</md-icon>
                 <span class="md-list-item-text">收藏的歌单</span>
+
+                <md-list slot="md-expand">
+                    <md-list-item v-for="(item, index) in myCollectSheets" :key="index + 'my-sheets-list'" class="md-inset own-sheet-item" @click="goToSheet(item)">
+                        {{item.shtName}}
+                        <md-button class="delete-icon md-icon-button" @click.stop.prevent="clickCancelCollect(item)">
+                            <md-icon>
+                                delete
+                            </md-icon>
+                        </md-button>
+                    </md-list-item>
+<!--                    <md-list-item class="md-inset" @click="emitCreateEmptySheet">创建新歌单</md-list-item>-->
+                </md-list>
             </md-list-item>
         </md-list>
     </div>
@@ -68,7 +79,7 @@
         },
 
         methods: {
-            ...mapActions(['createEmptySheet', 'getAllMySheet', 'removeMySheet']),
+            ...mapActions(['createEmptySheet', 'getAllMySheets', 'removeMySheet', 'getAllSheetsByCollector', 'cancelOneCollect', 'collectOneSheet']),
             emitCreateEmptySheet() {
                 this.$prompt({
                     show: true,
@@ -111,15 +122,17 @@
             },
             deleteOwnSheet(sheet) {
                 this.removeMySheet(sheet.uuid);
+            },
+            clickCancelCollect(sheet) {
+                this.cancelOneCollect(sheet.uuid);
             }
         },
         computed: {
-            ...mapGetters(['mySheets', 'getUser'])
+            ...mapGetters(['mySheets', 'getUser', 'myCollectSheets'])
         },
         mounted () {
-            this.getAllMySheet({
-                userId: this.getUser.uuid
-            });
+            this.getAllMySheets(this.getUser.uuid);
+            this.getAllSheetsByCollector(this.getUser.uuid);
         }
     }
 </script>

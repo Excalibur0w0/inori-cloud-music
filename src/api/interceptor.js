@@ -16,6 +16,7 @@ createResponseInterceptor(() => {
 }, (error) => {
     _this.$progress({ show: false })
     if (error && error.response) {
-        _this.$alert({ show: true, content: error.response.data, title: 'ERROR' })
+        // _this.$alert({ show: true, content: error.response.data, title: 'ERROR' })
+        _this.$alert({ show: true, content: error.response.data.message, title: '提示' })
     }
 })

@@ -8,7 +8,7 @@
                 <div class="features">
                     <div>{{getUser ? getUser.uname : 'null'}}</div>
                     <div>等级2</div>
-                    <div>男</div>
+                    <div>{{getUser ? getUser.gender : '未设置性别'}}</div>
                     <md-button class="alter-data-btn" @click="goToAlterUser">
                         修改資料
                     </md-button>
@@ -24,11 +24,11 @@
             </div>
             <div class=""></div>
         </div>
-        <div class="sheet-wap">
-            <div>
+        <div class="sheet-wap" >
+            <div v-if="mySheets && mySheets.length > 0">
                 <div class="banner">
                     <div class="msg">
-                        我创建的歌单 (3)
+                        我创建的歌单 {{""}}
                     </div>
                 </div>
                 <div class="sht-list">
@@ -41,15 +41,18 @@
                 </div>
             </div>
 
-            <div>
+            <div v-if="myCollectSheets && myCollectSheets.length > 0">
                 <div class="banner">
                     <div class="msg">
-                        我收藏的歌单 (3)
+                        我收藏的歌单 {{""}}
                     </div>
                 </div>
                 <div class="sht-list">
-                    <div  class="sht-wap" v-for="(item, index) in sheetList.slice(4)" :key="index + 'sht-create'">
-                        {{item}}
+                    <div :style="`background: url(${musicImgPath + item.imgPath}) 50% 50%; background-size: cover;`"
+                         class="sht-wap" @click="goToSheet(item)"
+                         v-for="(item, index) in myCollectSheets"
+                         :key="index + 'sht-collect'">
+                        {{item.shtName}}
                     </div>
                 </div>
             </div>
@@ -62,18 +65,11 @@
 
     export default {
         name: 'UserCenter',
-        data() {
-            return {
-                sheetList: [
-                    // 3,3,4,5,6,7,
-                    // 3,3,4,5,6,7,
-                ]
-            }
-        },
         computed: {
             ...mapGetters([
                 'getUser',
                 'mySheets',
+                'myCollectSheets',
                 'avatarPath',
                 'musicImgPath'
             ])

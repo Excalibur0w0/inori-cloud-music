@@ -21,7 +21,7 @@
 
                 <div class="block">
                     <h3>生日</h3>
-                    <md-datepicker v-model="form.birthday"/>
+                    <md-datepicker v-if="forcceUpdate" v-model="form.birthday"/>
                 </div>
 
                 <md-radio v-model="form.gender" value="男">男 <small>(Male)</small></md-radio>
@@ -41,7 +41,6 @@
 
 
 <script>
-    import {VueCropper} from 'vue-cropper'
     import {mapActions, mapGetters, mapState} from 'vuex'
     import ImageCuter from '@/components/ImageCuter'
     import {uploadAvatar} from '@/api/request'
@@ -49,18 +48,19 @@
     export default {
         name: 'AlterUser',
         watch: {
-          getUser(oldVal, newVal) {
-              this.refreshData(newVal)
-          }
+          // getUser(oldVal, newVal) {
+          //     this.refreshData(newVal)
+          // }
         },
         data() {
             return {
                 form: {
                     uname: "",
-                    birthday: new Date(),
+                    birthday: "2060-12-09",
                     gender: "男",
                     description: "",
                 },
+                forcceUpdate: false,
                 cropOption: {
                     img: 'https://shnhz.github.io/shn-ui/img/Koala.jpg',
                     size: 64,
@@ -71,22 +71,30 @@
             }
         },
         components: {
-            VueCropper,
             ImageCuter
         },
         methods: {
-            ...mapActions(['updateUser']),
+            ...mapActions(['updateUser', 'getInfoNotCache']),
             refreshData(newVal) {
                 this.form.birthday = newVal.birthday;
                 this.form.description = newVal.description;
                 this.form.gender = newVal.gender;
                 this.form.uname = newVal.uname;
+
+                console.log(newVal.birthday)
+
+                this.forcceUpdate = true;
             },
             submit() {
+                this.forcceUpdate = false;
                 this.updateUser(this.form).then(() => {
                     this.$alert({
                         show: true,
                         content: '更改成功'
+                    })
+
+                    this.getInfoNotCache().then(() => {
+                        this.forcceUpdate = true;
                     })
                 })
             },

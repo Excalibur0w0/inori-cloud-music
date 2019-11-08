@@ -27,7 +27,7 @@ const router = new Router({
                 {
                     path: '/home',
                     name: 'Home',
-                    component: Home
+                    component: Discovery
                 },
                 {
                     path: '/userCenter',

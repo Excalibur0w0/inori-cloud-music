@@ -1,7 +1,8 @@
 <template>
     <div class="sheet-wap">
         <div class="sheet-msg-wap">
-            <div class="avartar" :style="`background: url(http://localhost:5333/provider-music/io/resource/img?imgPath=${sheet.imgPath}) 50% 50%;`">
+            <div class="avartar"
+                 :style="`background: url(http://localhost:5333/provider-music/io/resource/img?imgPath=${sheet.imgPath}) 50% 50%;`">
             </div>
             <div class="info">
                 <div class="features">
@@ -14,7 +15,7 @@
                 <div class="active">
                     <div>{{ sheetAuthorName }}</div>
                     <div>于{{ createdTime }}创建</div>
-<!--                    <div v-if="isSelf"> 这是您创建的歌单 </div>-->
+                    <!--                    <div v-if="isSelf"> 这是您创建的歌单 </div>-->
                 </div>
                 <div class="active">
                     <div>
@@ -22,7 +23,7 @@
                             播放全部
                         </md-ripple>
                     </div>
-                    <div>
+                    <div @click="collectSheet">
                         <md-ripple>
                             收藏
                         </md-ripple>
@@ -38,89 +39,102 @@
                         </md-ripple>
                     </div>
                 </div>
-                <div>标签： </div>
+                <div>标签：</div>
                 <div>简介： {{sheet.shtDesc}}</div>
             </div>
             <div class=""></div>
         </div>
 
-            <md-table>
-                <md-table-row>
-                    <md-table-head>操作</md-table-head>
-                    <md-table-head>音乐标题</md-table-head>
-                    <md-table-head>歌手</md-table-head>
-                    <md-table-head>专辑</md-table-head>
-                    <md-table-head>时常</md-table-head>
-                </md-table-row>
+        <md-table>
+            <md-table-row>
+                <md-table-head>操作</md-table-head>
+                <md-table-head>音乐标题</md-table-head>
+                <md-table-head>歌手</md-table-head>
+                <md-table-head>专辑</md-table-head>
+                <md-table-head>时常</md-table-head>
+            </md-table-row>
 
 
-                <song-list-item v-for="(item, index) in sheetList" :song-info="item" :key="'songs' + index" @select-one-song="changePlayList">
-                </song-list-item>
-            </md-table>
+            <song-list-item v-for="(item, index) in songList" :song-info="item" :key="'songs' + index"
+                            @select-one-song="changePlayList">
+            </song-list-item>
+        </md-table>
     </div>
 </template>
 
 <script>
-    import { mapGetters } from 'vuex'
-    import {getSheetInfo, getSongsBySheetId, getUserBasicInfo} from '@/api/request'
+    import {mapActions, mapGetters} from 'vuex'
+    import {collectSheet, getSheetInfo, getSongsBySheetId, getUserBasicInfo} from '@/api/request'
     import SongListItem from '@/components/SongListItem'
     import {transToShow} from '@/utils/transdate'
 
     export default {
         name: 'Sheet',
         watch: {
-          '$route' (to, from) {
-            this.fetchSheetData();
-          }
+            '$route'(to, from) {
+                this.fetchSheetData()
+            }
         },
         data() {
             return {
                 sheetId: null,
                 // default - status
                 sheet: {
-                    shtName: "noname",
-                    shtDesc: "nodesc",
-                    shtCreator: "nocreator",
+                    shtName: 'noname',
+                    shtDesc: 'nodesc',
+                    shtCreator: 'nocreator',
                     createdAt: 'maybe today',
                 },
                 sheetAuthorName: null,
-                sheetList: []
+                songList: []
             }
         },
         mounted() {
-            this.fetchSheetData();
+            this.fetchSheetData()
         },
         methods: {
-          fetchSheetData() {
-              this.sheetId = this.$route.params.id;
-              getSheetInfo(this.sheetId).then(data => {
-                  this.sheet = data
-                  let userId = this.sheet.shtCreator;
-                  if (userId) {
-                      getUserBasicInfo(userId).then((userBasic) => {
-                          this.sheetAuthorName = userBasic.uname;
-                          // eslint-disable-next-line no-console
-                          console.log(this.sheet);
-                      })
-                  }
+            ...mapActions(['refreshList', 'collectOneSheet', 'cancelOneCollect']),
+            fetchSheetData() {
+                this.sheetId = this.$route.params.id
+                getSheetInfo(this.sheetId).then(data => {
+                    this.sheet = data
+                    let userId = this.sheet.shtCreator
+                    if (userId) {
+                        getUserBasicInfo(userId).then((userBasic) => {
+                            this.sheetAuthorName = userBasic.uname
+                            // eslint-disable-next-line no-console
+                            console.log(this.sheet)
+                        })
+                    }
 
-                  getSongsBySheetId(this.sheetId).then(data => {
-                      this.sheetList = data
-                  })
-              })
-          },
+                    getSongsBySheetId(this.sheetId).then(data => {
+                        this.songList = data
+                    })
+                })
+            },
             // 说明选择了一首该歌单的歌曲
             changePlayList() {
-
+                this.refreshList(this.songList)
+            },
+            collectSheet() {
+                // console.log(this.sheet)
+                if (this.getUser.uuid !== this.sheet.shtCreator) {
+                    this.collectOneSheet(this.sheet.uuid)
+                } else {
+                    this.$alert({
+                        show: true,
+                        content: '您是歌单的创建者,不需要收藏歌单'
+                    })
+                }
             }
         },
         computed: {
             ...mapGetters(['getUser']),
-            isSelf () {
-                return this.getUser.uuid === this.sheet.shtCreator;
+            isSelf() {
+                return this.getUser.uuid === this.sheet.shtCreator
             },
             createdTime() {
-                return transToShow(this.sheet.createdAt);
+                return transToShow(this.sheet.createdAt)
             }
         },
         components: {
@@ -135,6 +149,7 @@
     .sheet-wap {
         width: 100%;
         padding: 0 $std_padding;
+
         .sheet-msg-wap {
             display: flex;
             justify-content: flex-start;

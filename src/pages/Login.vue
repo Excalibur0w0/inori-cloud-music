@@ -58,7 +58,7 @@
             }
         },
         methods: {
-            ...mapActions(['login', 'logout']),
+            ...mapActions(['login', 'logout', 'register']),
             setActiveStatus (activeTabId) {
                 this.tabId = activeTabId;
             },
@@ -74,6 +74,15 @@
                     })
                 } else if (this.tabId === 'tab-register') {
                     // do-nothing
+                    this.register({
+                        uname: this.uname,
+                        password: this.password
+                    }).then(() => {
+                        this.$alert({
+                            show: true,
+                            content: '注册成功'
+                        })
+                    })
                 }
             },
             clickLogOut () {
