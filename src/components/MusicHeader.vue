@@ -35,8 +35,7 @@
 
                             <md-menu-content>
                                 <md-menu-item @click="clickLogOut">注销</md-menu-item>
-                                <md-menu-item @click="clearStoreUser">测试：清除USER</md-menu-item>
-                                <md-menu-item>My Item 3</md-menu-item>
+<!--                                <md-menu-item @click="clearStoreUser">测试：清除USER</md-menu-item>-->
                                 <md-menu-item @click="() => {}">
                                     <uploader :content="'上传'" ></uploader>
                                 </md-menu-item>

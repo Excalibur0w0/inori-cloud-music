@@ -40,6 +40,7 @@
     .search-list-wap {
         width: 100%;
         padding: 0 $std_padding;
+        margin-bottom: 200px;
         /*z-index: 10;*/
     }
 </style>

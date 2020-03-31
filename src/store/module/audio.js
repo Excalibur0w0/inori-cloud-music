@@ -6,7 +6,6 @@ const PLAY_MODEL = {
 }
 const stateObj = {
     playList: [
-
     ],
     recordPlayList: [],
     curPlay: {},
@@ -58,7 +57,6 @@ const audioModule = {
                         return song.uuid === state.curPlay.uuid
                     })
                     state.curIndex = number
-
                 }
             }
         },

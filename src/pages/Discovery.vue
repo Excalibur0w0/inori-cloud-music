@@ -24,8 +24,23 @@
             </div>
 
             <div class="recommand-sheet-wap">
-                <div v-for="(item, index) in recommandSheets"
+                <div v-for="(item, index) in recommandSheets.slice(0, 7)"
                      :key="'rec_sheets' + index"
+                     class="img-cover"
+                     :style="`background: url(http://localhost:5333/provider-music/io/resource/img?imgPath=${item.imgPath}) 50% 50%;`"
+                     @click="goToSheet(item)"
+                >
+                    {{item.shtName}}
+                </div>
+            </div>
+
+            <div class="title-has-border">
+                您可能喜欢的
+            </div>
+
+            <div class="recommand-sheet-wap">
+                <div v-for="(item, index) in recommandSheets.slice(8)"
+                     :key="'rec_sheets2' + index"
                      class="img-cover"
                      :style="`background: url(http://localhost:5333/provider-music/io/resource/img?imgPath=${item.imgPath}) 50% 50%;`"
                      @click="goToSheet(item)"
@@ -94,6 +109,7 @@
         }
         .discovery-content {
             // padding: 0 $super_big_padding;
+            margin-bottom: 100px;
 
             .recommand-sheet-wap {
                 margin-top: $std_margin;

@@ -39,8 +39,8 @@
             </md-dialog-actions>
         </md-dialog>
 
-        <md-button class="md-primary md-raised" @click="showDialog = true">Show Dialog</md-button>
-        <md-button class="md-primary md-raised" @click="clickLogOut">LogOut</md-button>
+<!--        <md-button class="md-primary md-raised" @click="showDialog = true">Show Dialog</md-button>-->
+<!--        <md-button class="md-primary md-raised" @click="clickLogOut">LogOut</md-button>-->
     </div>
 </template>
 
@@ -51,7 +51,7 @@
         name: 'Login',
         data () {
             return {
-                showDialog: false,
+                showDialog: true,
                 password: '',
                 uname: '',
                 tabId: 'tab-login',
