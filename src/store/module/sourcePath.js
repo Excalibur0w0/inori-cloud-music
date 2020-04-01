@@ -4,11 +4,11 @@ const sourcePathModule = {
     state: {
         requestPath: {
             img: {
-                user: "http://localhost:5333/provider-auth/io/resource/img?imgPath=",
-                music: "http://localhost:5333/provider-music/io/resource/img?imgPath="
+                user: "http://10.0.0.11:5333/provider-auth/io/resource/img?imgPath=",
+                music: "http://10.0.0.11:5333/provider-music/io/resource/img?imgPath="
             },
             audio: {
-                default: "http://localhost:5333/provider-music/io/resource/audio?md5="
+                default: "http://10.0.0.11:5333/provider-music/io/resource/audio?md5="
             }
         }
     },

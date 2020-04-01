@@ -2,7 +2,7 @@
     <div class="sheet-wap">
         <div class="sheet-msg-wap">
             <div class="avartar"
-                 :style="`background: url(http://localhost:5333/provider-music/io/resource/img?imgPath=${sheet.imgPath}) 50% 50%;`">
+                 :style="`background: url(http://10.0.0.11:5333/provider-music/io/resource/img?imgPath=${sheet.imgPath}) 50% 50%;`">
             </div>
             <div class="info">
                 <div class="features">

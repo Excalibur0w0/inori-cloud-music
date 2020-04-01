@@ -27,7 +27,7 @@
                 <div v-for="(item, index) in recommandSheets.slice(0, 7)"
                      :key="'rec_sheets' + index"
                      class="img-cover"
-                     :style="`background: url(http://localhost:5333/provider-music/io/resource/img?imgPath=${item.imgPath}) 50% 50%;`"
+                     :style="`background: url(http://10.0.0.11:5333/provider-music/io/resource/img?imgPath=${item.imgPath}) 50% 50%;`"
                      @click="goToSheet(item)"
                 >
                     {{item.shtName}}
@@ -42,7 +42,7 @@
                 <div v-for="(item, index) in recommandSheets.slice(8)"
                      :key="'rec_sheets2' + index"
                      class="img-cover"
-                     :style="`background: url(http://localhost:5333/provider-music/io/resource/img?imgPath=${item.imgPath}) 50% 50%;`"
+                     :style="`background: url(http://10.0.0.11:5333/provider-music/io/resource/img?imgPath=${item.imgPath}) 50% 50%;`"
                      @click="goToSheet(item)"
                 >
                     {{item.shtName}}
